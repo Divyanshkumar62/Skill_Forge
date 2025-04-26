@@ -48,7 +48,7 @@ const goalSchema = new Schema<IGoal>({
         type: Date
     },
     owner: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
     }

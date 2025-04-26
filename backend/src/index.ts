@@ -1,6 +1,7 @@
 import app from "./app";
 import mongoose from "mongoose"
 import dotenv from "dotenv"
+import { startGoalReminderJob } from "./jobs/goalReminder.job";
 
 dotenv.config();
 
@@ -19,3 +20,6 @@ mongoose
         console.error("MongoDB connection error:", err)
         process.exit(1) 
     })
+
+// startGoalReminderJob() is called to start the cron job for goal reminders
+startGoalReminderJob()
