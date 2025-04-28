@@ -6,7 +6,7 @@ import {
 } from "../controllers/notification.controller";
 import { protect } from "../middlewares/auth.middleware";
 
-const router = Router();
+const router: Router = Router();
 
 router.get("/", protect, getNotifications);
 router.patch("/:id/read", protect, markNotificationAsRead);

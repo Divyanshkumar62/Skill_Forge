@@ -3,6 +3,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.routes';
 import goalRoutes from './routes/goal.routes'
 import notificationRoutes from './routes/notification.routes';
+import milestoneRoutes from './routes/milestone.route';
 const app = express()
 
 app.use(cors())
@@ -15,5 +16,6 @@ app.get("/", (_req, res) => {
 app.use('/api/auth', authRoutes)
 app.use('/api/goals', goalRoutes)
 app.use('/api/notifications', notificationRoutes)
+app.use('/api/milestones', milestoneRoutes)
 
 export default app
