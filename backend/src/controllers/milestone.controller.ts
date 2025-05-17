@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import Goal from "../models/goal.model";
 import mongoose, { Schema, Document, Types } from "mongoose";
+import { awardXP } from "../services/xp.service";
+import { checkAndAwardBadges } from "../services/badge.service";
 
 export const createMilestone = async (req: Request, res: Response): Promise<void> => {
     const { goalId } = req.params;
@@ -22,8 +24,9 @@ export const createMilestone = async (req: Request, res: Response): Promise<void
         };
         goal.milestones.push(newMilestone);
         await goal.save();
-
+        
         res.status(201).json({ message: "Milestone created successfully", milestone: newMilestone });
+        await checkAndAwardBadges(req.user.id);
 
     } catch (error) {
         console.error("Error creating milestone:", error);
@@ -40,7 +43,7 @@ export const completeMilestone = async (
   try {
     const goal = await Goal.findById(goalId);
     if (!goal) {
-      res.status(404).json({ message: "Goal not found" });
+      res.status(404).json({ message: "Goal not found!" });
       return;
     }
     if (goal.owner.toString() !== req.user.id) {
@@ -59,13 +62,15 @@ export const completeMilestone = async (
     }
     milestone.completed = true;
 
-    // Update the goal's progress
+    await awardXP(req.user.id, 20);
+    
     const total = goal.milestones.length;
     const completed = goal.milestones.filter(m => m.completed).length;
     goal.progress = total > 0 ? (completed / total) * 100 : 0;
-
+    
     await goal.save();
     res.status(200).json({ message: "Milestone completed successfully", milestone });
+    await checkAndAwardBadges(req.user.id);
     
   } catch (error) {
     console.error("Error completing milestone:", error);
@@ -118,14 +123,14 @@ export const deleteMilestone = async (req: Request, res: Response): Promise<void
     const { goalId, milestoneId } = req.params;
 
     try {
-        // Fetch the goal by ID
+        
         const goal = await Goal.findById(goalId);
         if (!goal) {
             res.status(404).json({ message: "Goal not found" });
             return;
         }
 
-        // Check ownership
+   
         if (goal.owner.toString() !== req.user.id.toString()) {
             res.status(403).json({ message: "You are not authorized to modify this goal" });
             return;
@@ -138,12 +143,12 @@ export const deleteMilestone = async (req: Request, res: Response): Promise<void
           goal.milestones.splice(index, 1); // Remove the milestone at the given index
         }
         
-        // Update progress
+    
         const total = goal.milestones.length;
         const completed = goal.milestones.filter((m) => m.completed).length;
         goal.progress = total > 0 ? (completed / total) * 100 : 0;
 
-        // Save the updated goal
+    
         await goal.save();
         res.status(200).json({ message: "Milestone deleted successfully" });
     } catch (error) {

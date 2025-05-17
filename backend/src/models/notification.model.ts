@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export type NotificationType = "reminder" | "milestone" | "goal" | "tip";
+export type NotificationType = "reminder" | "milestone" | "goal" | "tip" | "achievement";
 
 export interface INotification extends Document {
   user: mongoose.Types.ObjectId;
@@ -21,7 +21,7 @@ const notificationSchema = new Schema<INotification>(
     type: {
       type: String,
       enum: {
-        values: ["reminder", "tip", "milestone", "goal"],
+        values: ["reminder", "tip", "milestone", "goal", "achivement"],
         message: "Invalid notification type",
       },
       required: [true, "Notification type is required"],

@@ -6,6 +6,12 @@ export interface IUser extends Document {
     name: string;
     email: string;
     password: string;
+    xp: number;
+    level: number;
+    badges: Array<{
+        title: string;
+        achievedAt: Date;
+    }>;
     comparePassword(password: string): Promise<boolean>
 }
 
@@ -22,7 +28,21 @@ const userSchema: Schema<IUser> = new Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    xp: {
+        type: Number,
+        default: 0
+    },
+    level: {
+        type: Number,
+        default: 1
+    },
+    badges: [
+        {
+            title: String,
+            achievedAt: Date
+        }
+    ],
 }, { timestamps: true })
 
 userSchema.pre("save", async function (next) {
