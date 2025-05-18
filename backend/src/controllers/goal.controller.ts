@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Goal from '../models/goal.model'
 import { awardXP } from "../services/xp.service";
 import { checkAndAwardBadges } from "../services/badge.service";
+import { updateStreak } from "../services/streak.service";
 
 const calculateProgress = (milestones: { completed: boolean }[]): number => {
     if(milestones.length === 0) return 0;
@@ -81,6 +82,8 @@ export const completeGoal = async (req: Request, res: Response): Promise<void> =
     if (goal.milestones.length > 5) {
       await awardXP(req.user.id, 30);
     }
+
+    await updateStreak(req.user.id);
 
     await checkAndAwardBadges(req.user.id);
     res.status(200).json({ message: "Goal completed successfully", goal });

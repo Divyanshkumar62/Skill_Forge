@@ -3,6 +3,7 @@ import Goal from "../models/goal.model";
 import mongoose, { Schema, Document, Types } from "mongoose";
 import { awardXP } from "../services/xp.service";
 import { checkAndAwardBadges } from "../services/badge.service";
+import { updateStreak } from "../services/streak.service";
 
 export const createMilestone = async (req: Request, res: Response): Promise<void> => {
     const { goalId } = req.params;
@@ -70,8 +71,10 @@ export const completeMilestone = async (
     
     await goal.save();
     res.status(200).json({ message: "Milestone completed successfully", milestone });
+
     await checkAndAwardBadges(req.user.id);
     
+    await updateStreak(req.user.id); 
   } catch (error) {
     console.error("Error completing milestone:", error);
     res.status(500).json({ message: "Internal server error" });

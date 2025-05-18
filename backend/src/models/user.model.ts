@@ -8,42 +8,69 @@ export interface IUser extends Document {
     password: string;
     xp: number;
     level: number;
+    completedGoals: number;
+    completedMilestones: number;
     badges: Array<{
         title: string;
         achievedAt: Date;
     }>;
+    currentStreak: number;
+    longestStreak: number;
+    lastActivityDate: Date;
     comparePassword(password: string): Promise<boolean>
 }
 
-const userSchema: Schema<IUser> = new Schema({
+const userSchema: Schema<IUser> = new Schema(
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     email: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true,
     },
     password: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     xp: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     level: {
-        type: Number,
-        default: 1
+      type: Number,
+      default: 1,
+    },
+    completedGoals: {
+      type: Number,
+      default: 0,
+    },
+    completedMilestones: {
+      type: Number,
+      default: 0,
     },
     badges: [
-        {
-            title: String,
-            achievedAt: Date
-        }
+      {
+        title: String,
+        achievedAt: Date,
+      },
     ],
-}, { timestamps: true })
+    currentStreak: {
+        type: Number,
+        default: 0,
+      },
+    longestStreak: {
+        type: Number,
+        default: 0,
+      },
+    lastActivityDate: {
+        type: Date,
+      },      
+  },
+  { timestamps: true }
+);
 
 userSchema.pre("save", async function (next) {
     if(!this.isModified("password"))

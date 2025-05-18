@@ -7,23 +7,29 @@ interface Badge {
 }
 
 const badges: Badge[] = [
-    {
-        title: 'First Steps',
-        condition: (user: any) => user.xp >= 0,
-    },
-    {
-        title: 'Goal Setter',
-        condition: (user: any) => user.goals.length >= 1,
-    },
-    {
-        title: 'Goal Crusher',
-        condition: (user: any) => user.goals.filter((goal: any) => goal.status === 'completed').length >= 1,
-    },
-    {
-        title: 'Milestone Achiever',
-        condition: (user: any) => user.goals.some((goal: any) => goal.milestones.some((milestone: any) => milestone.completed)),
-    },
-]
+  {
+    title: 'First Step',
+    condition: (user) => user.completedGoals >= 1,
+  },
+  {
+    title: 'Goal Getter',
+    condition: (user) => user.completedGoals >= 5,
+  },
+  {
+    title: 'Milestone Maker',
+    condition: (user) => user.completedMilestones >= 5,
+  },
+  {
+    title: 'XP Rookie',
+    condition: (user) => user.xp >= 500,
+  },
+  {
+    title: 'XP Champion',
+    condition: (user) => user.xp >= 3000,
+  },
+  // Deadline Destroyer badge would need more logic based on deadline completion (optional later)
+];
+
 
 export const checkAndAwardBadges = async (userId: string) => {
   try {
