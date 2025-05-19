@@ -4,6 +4,7 @@ import authRoutes from './routes/auth.routes';
 import goalRoutes from './routes/goal.routes'
 import notificationRoutes from './routes/notification.routes';
 import milestoneRoutes from './routes/milestone.route';
+import dailyTaskRoutes from './routes/dailyTask.routes'
 const app = express()
 
 app.use(cors())
@@ -17,5 +18,6 @@ app.use('/api/auth', authRoutes)
 app.use('/api/goals', goalRoutes)
 app.use('/api/notifications', notificationRoutes)
 app.use('/api/milestones', milestoneRoutes)
+app.use('/api/daily-tasks', dailyTaskRoutes)
 
 export default app
