@@ -3,6 +3,7 @@ import Goal from '../models/goal.model'
 import { awardXP } from "../services/xp.service";
 import { checkAndAwardBadges } from "../services/badge.service";
 import { updateStreak } from "../services/streak.service";
+import { logActivity } from "../services/activity.service";
 
 const calculateProgress = (milestones: { completed: boolean }[]): number => {
     if(milestones.length === 0) return 0;
@@ -29,6 +30,16 @@ export const createGoal = async (req: Request, res: Response): Promise<void> => 
 
         res.status(201).json(goal)
         await checkAndAwardBadges(req.user.id);
+
+        await logActivity(
+          req.user._id,
+          "goal_created",
+          `Created goal "${goal.title}"`,
+          {
+            goalId: goal._id,
+          }
+        );
+          
 
     } catch (err){
         console.error(err)

@@ -1,10 +1,21 @@
 import { Request, Response } from "express";
 import * as habitService from "../services/habit.service";
+import { logActivity } from "../services/activity.service";
 
 export const createHabit = async (req: Request, res: Response) => {
   try {
     const habit = await habitService.createHabit(req.user._id, req.body);
     res.status(201).json(habit);
+
+    await logActivity(
+      req.user._id,
+      "habit_completed",
+      `Completed habit "${habit.title}"`,
+      {
+        habitId: habit._id,
+      }
+    );
+    
   } catch (err) {
     res.status(500).json({ error: "Failed to create habit" });
   }
