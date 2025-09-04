@@ -17,6 +17,14 @@ export interface IUser extends Document {
     currentStreak: number;
     longestStreak: number;
     lastActivityDate: Date;
+    notificationPreferences: {
+        habitReminders: boolean;
+        goalReminders: boolean;
+        milestoneReminders: boolean;
+        streakReminders: boolean;
+        gamificationNotifications: boolean;
+        weeklyReports: boolean;
+    };
     comparePassword(password: string): Promise<boolean>
 }
 
@@ -67,7 +75,33 @@ const userSchema: Schema<IUser> = new Schema(
       },
     lastActivityDate: {
         type: Date,
-      },      
+      },
+    notificationPreferences: {
+        habitReminders: {
+            type: Boolean,
+            default: true,
+        },
+        goalReminders: {
+            type: Boolean,
+            default: true,
+        },
+        milestoneReminders: {
+            type: Boolean,
+            default: true,
+        },
+        streakReminders: {
+            type: Boolean,
+            default: true,
+        },
+        gamificationNotifications: {
+            type: Boolean,
+            default: true,
+        },
+        weeklyReports: {
+            type: Boolean,
+            default: true,
+        },
+    },
   },
   { timestamps: true }
 );
