@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Goal } from "./types";
+import type { Goal } from "./types";
 
 interface Props {
   onSubmit: (data: Partial<Goal>) => void;

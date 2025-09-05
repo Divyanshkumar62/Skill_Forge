@@ -15,11 +15,11 @@ export const getMyTodayTasks = async (req: Request, res: Response) => {
 };
 
 export const markTaskComplete = async (req: Request, res: Response) => {
-  const task = await taskService.completeTask(req.params.id, req.user._id);
+  const task = await taskService.completeTask(req.params['id'] as string, req.user._id);
   res.json({ message: 'Task completed', task });
 };
 
 export const deleteMyTask = async (req: Request, res: Response) => {
-  await taskService.deleteTask(req.params.id);
+  await taskService.deleteTask(req.params['id'] as string);
   res.status(204).send();
 };

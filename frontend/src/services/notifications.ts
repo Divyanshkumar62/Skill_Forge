@@ -17,3 +17,5 @@ API.interceptors.request.use((config) => {
 export const getNotifications = () => API.get("/notifications");
 export const markAsRead = (id: string) => API.patch(`/notifications/${id}/read`);
 export const deleteNotification = (id: string) => API.delete(`/notifications/${id}`);
+export const getNotificationPreferences = () => API.get("/notifications/preferences");
+export const updateNotificationPreferences = (preferences: any) => API.put("/notifications/preferences", preferences);

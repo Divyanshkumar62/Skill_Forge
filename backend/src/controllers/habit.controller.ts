@@ -33,7 +33,7 @@ export const getHabits = async (req: Request, res: Response) => {
 export const updateHabit = async (req: Request, res: Response) => {
   try {
     const habit = await habitService.updateHabit(
-      req.params.id,
+      req.params['id'] as string,
       req.user._id,
       req.body
     );
@@ -45,7 +45,7 @@ export const updateHabit = async (req: Request, res: Response) => {
 
 export const deleteHabit = async (req: Request, res: Response) => {
   try {
-    await habitService.deleteHabit(req.params.id, req.user._id);
+    await habitService.deleteHabit(req.params['id'] as string, req.user._id);
     res.status(204).send();
   } catch (err) {
     res.status(500).json({ error: "Failed to delete habit" });
@@ -55,7 +55,7 @@ export const deleteHabit = async (req: Request, res: Response) => {
 export const completeHabit = async (req: Request, res: Response) => {
   try {
     const updatedHabit = await habitService.completeHabit(
-      req.params.id,
+      req.params['id'] as string,
       req.user._id
     );
     res.status(200).json(updatedHabit);

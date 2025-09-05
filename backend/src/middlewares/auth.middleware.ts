@@ -2,12 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model";
 
-interface DecodedToken {
-  userId: string;
-  iat: number;
-  exp: number;
-}
-
 declare global {
   namespace Express {
     interface Request {
@@ -33,7 +27,10 @@ export const protect = async (
 
   try {
     token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedToken;
+    const decoded = jwt.verify(
+      token as string,
+      process.env["JWT_SECRET"] as string
+    ) as any;
 
     const user = await User.findById(decoded.userId).select("-password");
     if (!user) {

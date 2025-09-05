@@ -1,4 +1,4 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 interface ProgressOverviewProps {
   activeHabits: number;
@@ -6,7 +6,6 @@ interface ProgressOverviewProps {
   completedTasks: number;
   currentXp: number;
   level: number;
-  nextLevelXp: number;
 }
 
 export default function ProgressOverview({
@@ -14,8 +13,7 @@ export default function ProgressOverview({
   pendingTasks,
   completedTasks,
   currentXp,
-  level,
-  nextLevelXp
+  level
 }: ProgressOverviewProps) {
   // Task completion data for pie chart
   const taskData = [
@@ -44,7 +42,7 @@ export default function ProgressOverview({
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+              label={({ name, percent }) => `${name}: ${percent ? (percent * 100).toFixed(0) : '0'}%`}
               outerRadius={80}
               fill="#8884d8"
               dataKey="value"

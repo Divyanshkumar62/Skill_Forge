@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Goal from "../models/goal.model";
-import mongoose, { Schema, Document, Types } from "mongoose";
 import { awardXP } from "../services/xp.service";
 import { checkAndAwardBadges } from "../services/badge.service";
 import { updateStreak } from "../services/streak.service";

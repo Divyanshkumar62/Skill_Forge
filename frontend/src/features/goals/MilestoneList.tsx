@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Goal } from "./types";
-import { addMilestone, toggleMilestone, deleteMilestone } from "./api";
+import type { Goal } from "./types";
+import { createMilestone, completeMilestone, deleteMilestone } from "../../services/milestones";
 
 interface Props {
   goal: Goal;
@@ -12,13 +12,13 @@ export default function MilestoneList({ goal, refresh }: Props) {
 
   const handleAdd = async () => {
     if (!newMilestone.trim()) return;
-    await addMilestone(goal._id, newMilestone);
+    await createMilestone(goal._id, {title: newMilestone});
     setNewMilestone("");
     refresh();
   };
 
   const handleToggle = async (mId: string) => {
-    await toggleMilestone(goal._id, mId);
+    await completeMilestone(goal._id, mId);
     refresh();
   };
 

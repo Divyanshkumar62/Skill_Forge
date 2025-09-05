@@ -1,10 +1,6 @@
 import { create } from "zustand";
 
-interface ActivityData {
-  date: string;
-  completed: number;
-  total: number;
-}
+
 
 interface XpSummary {
   current: number;

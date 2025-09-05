@@ -1,4 +1,4 @@
-import { Goal } from "./types";
+import type { Goal } from "./types";
 
 interface Props {
   goal: Goal;

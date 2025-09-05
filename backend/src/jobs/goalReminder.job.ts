@@ -1,6 +1,5 @@
 import cron from "node-cron";
 import Goal from "../models/goal.model";
-import User from "../models/user.model";
 import { createNotification } from "../utils/notify";
 import { sendEmailReminder } from "../utils/email";
 import dayjs from "dayjs";

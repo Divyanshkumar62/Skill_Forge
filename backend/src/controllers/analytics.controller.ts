@@ -75,10 +75,12 @@ export const getHeatmapData = async (req: Request, res: Response) => {
 };
 
 
-export const getXpSummary = async (req: Request, res: Response) => {
+export const getXpSummary = async (req: Request, res: Response): Promise<void> => {
   const user = await User.findById(req.user._id).select("xp level");
-  if (!user) return res.status(404).json({ error: "User not found" });
-
+  if (!user) {
+  res.status(404).json({ error: "User not found" });
+  return;
+}
   res.json({
     xp: user.xp,
     level: user.level,

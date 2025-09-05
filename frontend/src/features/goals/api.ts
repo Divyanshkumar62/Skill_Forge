@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Goal } from "./types";
+import type { Goal } from "./types";
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_BASE,

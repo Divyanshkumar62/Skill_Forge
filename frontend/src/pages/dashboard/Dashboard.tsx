@@ -14,14 +14,13 @@ export default function Dashboard() {
   const { habits, fetchHabits } = useHabits();
   const { tasks, fetchTodayTasks } = useDailyTasks();
   const { xp, level, streak, badges } = useGamification();
-  const { weeklyActivity, fetchWeeklyActivity, xpSummary, fetchXpSummary } = useAnalytics();
+  const { weeklyActivity, fetchWeeklyActivity } = useAnalytics();
 
   useEffect(() => {
     fetchHabits();
     fetchTodayTasks();
     fetchWeeklyActivity();
-    fetchXpSummary();
-  }, [fetchHabits, fetchTodayTasks, fetchWeeklyActivity, fetchXpSummary]);
+  }, [fetchHabits, fetchTodayTasks, fetchWeeklyActivity]);
 
   const pendingTasks = tasks.filter(task => !task.completed).length;
   const completedTasks = tasks.filter(task => task.completed).length;
@@ -110,7 +109,6 @@ export default function Dashboard() {
             completedTasks={completedTasks}
             currentXp={xp}
             level={level}
-            nextLevelXp={level * 100}
           />
         </div>
 

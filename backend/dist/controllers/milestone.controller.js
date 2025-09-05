@@ -1,0 +1,141 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteMilestone = exports.updateMilestone = exports.completeMilestone = exports.createMilestone = void 0;
+const goal_model_1 = __importDefault(require("../models/goal.model"));
+const xp_service_1 = require("../services/xp.service");
+const badge_service_1 = require("../services/badge.service");
+const streak_service_1 = require("../services/streak.service");
+const createMilestone = async (req, res) => {
+    const { goalId } = req.params;
+    const { title } = req.body;
+    try {
+        const goal = await goal_model_1.default.findById(goalId);
+        if (!goal) {
+            res.status(404).json({ message: "Goal not found" });
+            return;
+        }
+        if (goal.owner.toString() !== req.user.id) {
+            res.status(403).json({ message: "You are not authorized to create a milestone for this goal" });
+            return;
+        }
+        const newMilestone = {
+            title,
+            completed: false
+        };
+        goal.milestones.push(newMilestone);
+        await goal.save();
+        res.status(201).json({ message: "Milestone created successfully", milestone: newMilestone });
+        await (0, badge_service_1.checkAndAwardBadges)(req.user.id);
+    }
+    catch (error) {
+        console.error("Error creating milestone:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+exports.createMilestone = createMilestone;
+const completeMilestone = async (req, res) => {
+    const { goalId, milestoneId } = req.params;
+    try {
+        const goal = await goal_model_1.default.findById(goalId);
+        if (!goal) {
+            res.status(404).json({ message: "Goal not found!" });
+            return;
+        }
+        if (goal.owner.toString() !== req.user.id) {
+            res
+                .status(403)
+                .json({
+                message: "You are not authorized to create a milestone for this goal",
+            });
+            return;
+        }
+        const milestone = goal.milestones.id(milestoneId);
+        if (!milestone) {
+            res.status(404).json({ message: "Milestone not found" });
+            return;
+        }
+        milestone.completed = true;
+        await (0, xp_service_1.awardXP)(req.user.id, 20);
+        const total = goal.milestones.length;
+        const completed = goal.milestones.filter(m => m.completed).length;
+        goal.progress = total > 0 ? (completed / total) * 100 : 0;
+        await goal.save();
+        res.status(200).json({ message: "Milestone completed successfully", milestone });
+        await (0, badge_service_1.checkAndAwardBadges)(req.user.id);
+        await (0, streak_service_1.updateStreak)(req.user.id);
+    }
+    catch (error) {
+        console.error("Error completing milestone:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+exports.completeMilestone = completeMilestone;
+const updateMilestone = async (req, res) => {
+    const { goalId, milestoneId } = req.params;
+    const { title } = req.body;
+    try {
+        const goal = await goal_model_1.default.findById(goalId);
+        if (!goal) {
+            res.status(404).json({ message: "Goal not found" });
+            return;
+        }
+        if (goal.owner.toString() !== req.user.id) {
+            res
+                .status(403)
+                .json({
+                message: "You are not authorized to create a milestone for this goal",
+            });
+            return;
+        }
+        const milestone = goal.milestones.id(milestoneId);
+        if (!milestone) {
+            res.status(404).json({ message: "Milestone not found" });
+            return;
+        }
+        milestone.title = title;
+        await goal.save();
+        res
+            .status(201)
+            .json({
+            message: "Milestone updated successfully",
+            milestone: milestone,
+        });
+    }
+    catch (error) {
+        console.error("Error updating milestone:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+exports.updateMilestone = updateMilestone;
+const deleteMilestone = async (req, res) => {
+    const { goalId, milestoneId } = req.params;
+    try {
+        const goal = await goal_model_1.default.findById(goalId);
+        if (!goal) {
+            res.status(404).json({ message: "Goal not found" });
+            return;
+        }
+        if (goal.owner.toString() !== req.user.id.toString()) {
+            res.status(403).json({ message: "You are not authorized to modify this goal" });
+            return;
+        }
+        const index = goal.milestones.findIndex((m) => m._id.toString() === milestoneId);
+        if (index !== -1) {
+            goal.milestones.splice(index, 1); // Remove the milestone at the given index
+        }
+        const total = goal.milestones.length;
+        const completed = goal.milestones.filter((m) => m.completed).length;
+        goal.progress = total > 0 ? (completed / total) * 100 : 0;
+        await goal.save();
+        res.status(200).json({ message: "Milestone deleted successfully" });
+    }
+    catch (error) {
+        console.error("Error deleting milestone:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+exports.deleteMilestone = deleteMilestone;
+//# sourceMappingURL=milestone.controller.js.map

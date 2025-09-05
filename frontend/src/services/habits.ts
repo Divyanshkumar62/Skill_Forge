@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Habit, CreateHabitData, UpdateHabitData } from "../features/habits/types";
+import type { CreateHabitData, UpdateHabitData } from "../features/habits/types";
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_BASE,

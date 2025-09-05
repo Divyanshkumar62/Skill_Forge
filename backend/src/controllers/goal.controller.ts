@@ -107,7 +107,7 @@ export const completeGoal = async (req: Request, res: Response): Promise<void> =
 
 
 export const updateGoal = async (req: Request, res: Response): Promise<void> => {
-    let goal = await Goal.findOne({ _id: req.params.id, owner: req.user._id })
+    let goal = await Goal.findOne({ _id: req.params['id'], owner: req.user._id })
 
     if(!goal){
         res.status(404).json({message: "Goal not found!"})
@@ -129,7 +129,7 @@ export const updateGoal = async (req: Request, res: Response): Promise<void> => 
 
 export const deleteGoal = async (req: Request, res: Response) => {
     try {
-        const goal = await Goal.findOneAndDelete({ _id: req.params.id, owner: req.user._id })
+        const goal = await Goal.findOneAndDelete({ _id: req.params['id'], owner: req.user._id })
         if(goal)
             res.status(200).json({ message: "Goal Deleted!"} )
         else

@@ -15,7 +15,7 @@ export const getNotifications = async (
     const userId = req.user.id;
     // console.log("userid--->", userId);
     // console.log("req.user--->", req.user);
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    if (!mongoose.Types.ObjectId.isValid(userId || '')) {
       res.status(400).json({ error: "Invalid user ID format" });
       return;
     }
@@ -49,7 +49,7 @@ export const markNotificationAsRead = async (
     const userId = req.user._id;
 
     if (
-      !mongoose.Types.ObjectId.isValid(id) ||
+      !mongoose.Types.ObjectId.isValid(id as string) ||
       !mongoose.Types.ObjectId.isValid(userId)
     ) {
       res.status(400).json({ error: "Invalid ID format" });
@@ -88,7 +88,7 @@ export const deleteNotification = async (
     const userId = req.user._id;
 
     if (
-      !mongoose.Types.ObjectId.isValid(id) ||
+      !mongoose.Types.ObjectId.isValid(id as string) ||
       !mongoose.Types.ObjectId.isValid(userId)
     ) {
       res.status(400).json({ error: "Invalid ID format" });
