@@ -4,8 +4,14 @@ export interface HabitDocument extends Document {
     description?: string;
     frequency: 'daily' | 'weekly' | 'custom';
     customDays?: number;
+    daysOfWeek?: number[];
+    startDate?: Date;
+    endDate?: Date;
     user: mongoose.Types.ObjectId;
     completedDates: Date[];
+    streakCount: number;
+    lastCompletedDate?: Date;
+    xpReward: number;
     createdAt: Date;
     updatedAt: Date;
 }

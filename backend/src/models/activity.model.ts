@@ -4,6 +4,7 @@ export type ActivityType =
   | 'goal_created'
   | 'goal_completed'
   | 'milestone_completed'
+  | 'habit_created'
   | 'habit_completed'
   | 'quest_completed'
   | 'reward_claimed'

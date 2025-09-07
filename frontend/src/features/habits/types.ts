@@ -4,10 +4,16 @@ export interface Habit {
   description?: string;
   frequency: 'daily' | 'weekly' | 'custom';
   customDays?: number;
+  daysOfWeek?: number[];
+  startDate?: string;
+  endDate?: string;
   user: string;
-  completedDates: Date[];
-  createdAt: Date;
-  updatedAt: Date;
+  completedDates: string[];
+  streakCount: number;
+  lastCompletedDate?: string;
+  xpReward: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateHabitData {
@@ -15,6 +21,10 @@ export interface CreateHabitData {
   description?: string;
   frequency: 'daily' | 'weekly' | 'custom';
   customDays?: number;
+  daysOfWeek?: number[];
+  startDate?: string;
+  endDate?: string;
+  xpReward?: number;
 }
 
 export interface UpdateHabitData {

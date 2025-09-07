@@ -1,123 +1,20 @@
-import { useState } from "react";
-import { registerUser } from "../../features/auth/api";
-import { useAuth } from "../../features/auth/store";
-import { useNavigate, Link } from "react-router-dom";
-import AuthLayout from "../../components/AuthLayout";
+
+import AuthLayout from "../../features/auth/components/AuthLayout";
+import RegisterForm from "../../features/auth/components/RegisterForm";
 
 export default function Register() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const login = useAuth((s) => s.login);
-  const navigate = useNavigate();
 
-  const handleRegister = async () => {
-    if (!name || !email || !password) {
-      setError("Please fill all fields");
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-
-    try {
-      const res = await registerUser({ name, email, password });
-      login(res.data);
-      navigate("/");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed");
-    } finally {
-      setLoading(false);
-    }
+  const handleRegisterSuccess = () => {
+    // Registration handled by RegisterForm component
+    // The component will redirect internally after success
   };
 
   return (
-    <AuthLayout title="Join Skill Forge!" subtitle="Start your leveling journey">
-      <div className="space-y-6">
-        {error && (
-          <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-3 text-red-300 text-sm">
-            {error}
-          </div>
-        )}
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-white mb-2">
-              Adventurer Name
-            </label>
-            <input
-              className="w-full px-4 py-3 bg-white/10 border border-purple-300/30 rounded-lg text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-              type="text"
-              placeholder="Enter your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={loading}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-white mb-2">
-              Email
-            </label>
-            <input
-              className="w-full px-4 py-3 bg-white/10 border border-purple-300/30 rounded-lg text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={loading}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-white mb-2">
-              Password
-            </label>
-            <input
-              className="w-full px-4 py-3 bg-white/10 border border-purple-300/30 rounded-lg text-white placeholder-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-              type="password"
-              placeholder="Create a strong password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={loading}
-            />
-          </div>
-        </div>
-
-        <button
-          className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
-          onClick={handleRegister}
-          disabled={loading}
-        >
-          {loading ? (
-            <div className="flex items-center justify-center">
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-              Forging Account...
-            </div>
-          ) : (
-            "Start Your Journey ⚔️"
-          )}
-        </button>
-
-        <div className="text-center">
-          <p className="text-purple-200 text-sm">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-200"
-            >
-              Sign in
-            </Link>
-          </p>
-        </div>
-      </div>
+    <AuthLayout
+      title="Create Your Legend ⚔️"
+      subtitle="Begin your heroic journey with Skill Forge"
+    >
+      <RegisterForm onSuccess={handleRegisterSuccess} />
     </AuthLayout>
   );
 }

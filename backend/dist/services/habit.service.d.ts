@@ -18,7 +18,14 @@ export declare const deleteHabit: (habitId: string, userId: string) => Promise<(
 }> & {
     __v: number;
 }) | null>;
-export declare const completeHabit: (habitId: string, userId: string) => Promise<import("mongoose").Document<unknown, {}, import("../models/habit.model").HabitDocument> & import("../models/habit.model").HabitDocument & Required<{
+export declare const getHabitStreak: (habitId: string, userId: string) => Promise<{
+    habitId: unknown;
+    currentStreak: number;
+    longestStreak: number;
+    lastCompletedDate: Date | undefined;
+    totalCompletions: number;
+}>;
+export declare const completeHabit: (habitId: string, userId: string, timezone?: string) => Promise<import("mongoose").Document<unknown, {}, import("../models/habit.model").HabitDocument> & import("../models/habit.model").HabitDocument & Required<{
     _id: unknown;
 }> & {
     __v: number;

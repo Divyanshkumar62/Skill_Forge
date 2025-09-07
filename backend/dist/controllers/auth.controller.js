@@ -17,9 +17,11 @@ const registerUser = async (req, res) => {
             const user = await user_model_1.default.create({ name, email, password });
             if (user) {
                 res.status(201).json({
-                    _id: user._id,
+                    id: user._id,
                     name: user.name,
                     email: user.email,
+                    xp: user.xp,
+                    level: user.level,
                     token: (0, generateToken_1.default)(user._id),
                 });
             }
@@ -40,9 +42,11 @@ const loginUser = async (req, res) => {
         }
         if (user && (await user.comparePassword(password))) {
             res.status(200).json({
-                _id: user._id,
+                id: user._id,
                 name: user.name,
                 email: user.email,
+                xp: user.xp,
+                level: user.level,
                 token: (0, generateToken_1.default)(user._id)
             });
         }

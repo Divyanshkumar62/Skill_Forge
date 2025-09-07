@@ -13,9 +13,11 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
             const user = await User.create({ name, email, password });
             if (user) {
               res.status(201).json({
-                _id: user._id,
+                id: user._id,
                 name: user.name,
                 email: user.email,
+                xp: user.xp,
+                level: user.level,
                 token: generateToken(user._id),
               });
             }
@@ -36,9 +38,11 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         }
         if(user && (await user.comparePassword(password))){
             res.status(200).json({
-                _id: user._id,
+                id: user._id,
                 name: user.name,
                 email: user.email,
+                xp: user.xp,
+                level: user.level,
                 token: generateToken(user._id)
             })
         } else {

@@ -21,7 +21,7 @@ const notificationSchema = new Schema<INotification>(
     type: {
       type: String,
       enum: {
-        values: ["reminder", "tip", "milestone", "goal", "achivement"],
+        values: ["reminder", "tip", "milestone", "goal", "achievement"],
         message: "Invalid notification type",
       },
       required: [true, "Notification type is required"],

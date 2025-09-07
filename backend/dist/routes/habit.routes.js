@@ -12,5 +12,6 @@ router.get("/", auth_middleware_1.protect, habit_controller_1.getHabits);
 router.put("/:id", auth_middleware_1.protect, habit_controller_1.updateHabit);
 router.delete("/:id", auth_middleware_1.protect, habit_controller_1.deleteHabit);
 router.post("/:id/complete", auth_middleware_1.protect, habit_controller_1.completeHabit);
+router.get("/:id/streak", auth_middleware_1.protect, habit_controller_1.getHabitStreak);
 exports.default = router;
 //# sourceMappingURL=habit.routes.js.map

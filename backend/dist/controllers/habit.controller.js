@@ -33,19 +33,19 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.completeHabit = exports.deleteHabit = exports.updateHabit = exports.getHabits = exports.createHabit = void 0;
+exports.getHabitStreak = exports.completeHabit = exports.deleteHabit = exports.updateHabit = exports.getHabits = exports.createHabit = void 0;
 const habitService = __importStar(require("../services/habit.service"));
 const activity_service_1 = require("../services/activity.service");
 const createHabit = async (req, res) => {
     try {
         const habit = await habitService.createHabit(req.user._id, req.body);
         res.status(201).json(habit);
-        await (0, activity_service_1.logActivity)(req.user._id, "habit_completed", `Completed habit "${habit.title}"`, {
+        await (0, activity_service_1.logActivity)(req.user._id, "habit_created", `Created habit "${habit.title}"`, {
             habitId: habit._id,
         });
     }
     catch (err) {
-        res.status(500).json({ error: "Failed to create habit" });
+        res.status(500).json({ error: err.message || "Failed to create habit" });
     }
 };
 exports.createHabit = createHabit;
@@ -81,12 +81,23 @@ const deleteHabit = async (req, res) => {
 exports.deleteHabit = deleteHabit;
 const completeHabit = async (req, res) => {
     try {
-        const updatedHabit = await habitService.completeHabit(req.params['id'], req.user._id);
+        const timezone = req.body.timezone || 'Etc/UTC';
+        const updatedHabit = await habitService.completeHabit(req.params['id'], req.user._id, timezone);
         res.status(200).json(updatedHabit);
     }
     catch (err) {
-        res.status(400).json({ error: "Failed to complete habit" });
+        res.status(400).json({ error: err.message || "Failed to complete habit" });
     }
 };
 exports.completeHabit = completeHabit;
+const getHabitStreak = async (req, res) => {
+    try {
+        const streakInfo = await habitService.getHabitStreak(req.params['id'], req.user._id);
+        res.status(200).json(streakInfo);
+    }
+    catch (err) {
+        res.status(400).json({ error: err.message || "Failed to get habit streak" });
+    }
+};
+exports.getHabitStreak = getHabitStreak;
 //# sourceMappingURL=habit.controller.js.map

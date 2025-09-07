@@ -1,5 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-export type ActivityType = 'goal_created' | 'goal_completed' | 'milestone_completed' | 'habit_completed' | 'quest_completed' | 'reward_claimed' | 'daily_checkin';
+export type ActivityType = 'goal_created' | 'goal_completed' | 'milestone_completed' | 'habit_created' | 'habit_completed' | 'quest_completed' | 'reward_claimed' | 'daily_checkin';
 export interface ActivityDocument extends Document {
     user: mongoose.Types.ObjectId;
     type: ActivityType;

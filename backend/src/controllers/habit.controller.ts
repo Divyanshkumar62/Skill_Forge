@@ -9,15 +9,15 @@ export const createHabit = async (req: Request, res: Response) => {
 
     await logActivity(
       req.user._id,
-      "habit_completed",
-      `Completed habit "${habit.title}"`,
+      "habit_created",
+      `Created habit "${habit.title}"`,
       {
         habitId: habit._id,
       }
     );
-    
-  } catch (err) {
-    res.status(500).json({ error: "Failed to create habit" });
+
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Failed to create habit" });
   }
 };
 
@@ -54,14 +54,26 @@ export const deleteHabit = async (req: Request, res: Response) => {
 
 export const completeHabit = async (req: Request, res: Response) => {
   try {
+    const timezone = req.body.timezone || 'Etc/UTC';
     const updatedHabit = await habitService.completeHabit(
       req.params['id'] as string,
-      req.user._id
+      req.user._id,
+      timezone
     );
     res.status(200).json(updatedHabit);
-  } catch (err) {
-    res.status(400).json({ error: "Failed to complete habit" });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to complete habit" });
   }
 };
 
-
+export const getHabitStreak = async (req: Request, res: Response) => {
+  try {
+    const streakInfo = await habitService.getHabitStreak(
+      req.params['id'] as string,
+      req.user._id
+    );
+    res.status(200).json(streakInfo);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || "Failed to get habit streak" });
+  }
+};

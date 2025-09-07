@@ -50,7 +50,25 @@ const habitSchema = new mongoose_1.Schema({
         required: true,
     },
     customDays: {
-        type: Number
+        type: Number,
+        default: 1,
+    },
+    daysOfWeek: {
+        type: [Number], // 0=Monday, 1=Tuesday, ..., 6=Sunday
+        default: [],
+        validate: {
+            validator: function (arr) {
+                return arr.length === 0 || arr.every(day => day >= 0 && day <= 6);
+            },
+            message: 'Days of week must be numbers 0-6'
+        }
+    },
+    startDate: {
+        type: Date,
+        default: () => new Date(),
+    },
+    endDate: {
+        type: Date,
     },
     user: {
         type: mongoose_1.default.Schema.Types.ObjectId,
@@ -60,6 +78,17 @@ const habitSchema = new mongoose_1.Schema({
     completedDates: {
         type: [Date],
         default: [],
+    },
+    streakCount: {
+        type: Number,
+        default: 0,
+    },
+    lastCompletedDate: {
+        type: Date,
+    },
+    xpReward: {
+        type: Number,
+        default: 10,
     },
 }, { timestamps: true });
 exports.Habit = mongoose_1.default.model('Habit', habitSchema);

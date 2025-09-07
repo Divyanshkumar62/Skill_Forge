@@ -20,3 +20,4 @@ export const createGoal = (data: Partial<Goal>) => API.post("/goals", data);
 export const updateGoal = (id: string, data: Partial<Goal>) =>
   API.put(`/goals/${id}`, data);
 export const deleteGoal = (id: string) => API.delete(`/goals/${id}`);
+export const completeGoal = (id: string) => API.patch(`/goals/complete/${id}`);
