@@ -7,6 +7,9 @@ import milestoneRoutes from './routes/milestone.route';
 import dailyTaskRoutes from './routes/dailyTask.routes'
 import habitRoutes from './routes/habit.routes';
 import analyticsRoutes from "./routes/analytics.routes";
+import questRoutes from './routes/quest.routes';
+import xpRoutes from './routes/xp.routes';
+import rewardRoutes from './routes/reward.routes';
 const app = express()
 
 app.use(cors())
@@ -23,5 +26,8 @@ app.use('/api/milestones', milestoneRoutes)
 app.use('/api/daily-tasks', dailyTaskRoutes)
 app.use('/api/habits', habitRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use('/api/quests', questRoutes);
+app.use('/api/xp', xpRoutes);
+app.use('/api/rewards', rewardRoutes);
 
 export default app

@@ -15,6 +15,12 @@ const calculateProgress = (milestones: { completed: boolean }[]): number => {
 export const createGoal = async (req: Request, res: Response): Promise<void> => {
     const { title, description, milestones, dueDate } = req.body;
     try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
         const progress = calculateProgress(milestones);
         const status = progress === 100 ? "completed": progress > 0 ? "in-progress" : "pending"
 
@@ -25,21 +31,21 @@ export const createGoal = async (req: Request, res: Response): Promise<void> => 
             progress,
             status,
             dueDate,
-            owner: req.user._id
+            owner: userId
         })
 
         res.status(201).json(goal)
-        await checkAndAwardBadges(req.user.id);
+        await checkAndAwardBadges(userId);
 
         await logActivity(
-          req.user._id,
+          userId,
           "goal_created",
           `Created goal "${goal.title}"`,
           {
             goalId: goal._id,
           }
         );
-          
+
 
     } catch (err){
         console.error(err)
@@ -48,9 +54,19 @@ export const createGoal = async (req: Request, res: Response): Promise<void> => 
 }
 
 export const getGoals = async (req: Request, res: Response): Promise<void> => {
-    const goals = await Goal.find({ owner: req.user._id })
-    
-    res.status(200).json(goals)
+    try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
+        const goals = await Goal.find({ owner: userId })
+        res.status(200).json(goals)
+    } catch (error) {
+        console.error("Error getting goals:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
 }
 
 
@@ -58,10 +74,22 @@ export const completeGoal = async (req: Request, res: Response): Promise<void> =
   const { goalId } = req.params;
 
   try {
+    const userId = req.user?._id;
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
     const goal = await Goal.findById(goalId);
 
     if (!goal) {
         res.status(404).json({ message: "Goal not found" });
+        return;
+    }
+
+    // Verify the goal belongs to the user
+    if (goal.owner.toString() !== userId) {
+        res.status(403).json({ message: "Access denied" });
         return;
     }
 
@@ -79,24 +107,24 @@ export const completeGoal = async (req: Request, res: Response): Promise<void> =
     }
 
     goal.status = "completed";
-    goal.progress = 100; 
+    goal.progress = 100;
     await goal.save();
 
-    await awardXP(req.user.id, 100);
+    await awardXP(userId, 100);
 
     // Award extra XP if completed before due date
     if (new Date(Number(goal.dueDate)) > new Date()) {
-      await awardXP(req.user.id, 10);
+      await awardXP(userId, 10);
     }
 
     // Award bonus XP if goal had many milestones
     if (goal.milestones.length > 5) {
-      await awardXP(req.user.id, 30);
+      await awardXP(userId, 30);
     }
 
-    await updateStreak(req.user.id);
+    await updateStreak(userId);
 
-    await checkAndAwardBadges(req.user.id);
+    await checkAndAwardBadges(userId);
     res.status(200).json({ message: "Goal completed successfully", goal });
 
   } catch (err) {
@@ -107,35 +135,51 @@ export const completeGoal = async (req: Request, res: Response): Promise<void> =
 
 
 export const updateGoal = async (req: Request, res: Response): Promise<void> => {
-    let goal = await Goal.findOne({ _id: req.params['id'], owner: req.user._id })
-
-    if(!goal){
-        res.status(404).json({message: "Goal not found!"})
-    } else {
-        const updateGoalData = req.body;
-        if(updateGoalData.milestones){
-            goal.milestones = updateGoalData.milestones;
-            goal.progress = calculateProgress(updateGoalData.milestones);
-            goal.status = goal!.progress === 100 ? "completed" : goal.progress > 0 ? "in-progress": "pending"
+    try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
         }
 
-        goal.set(updateGoalData)
-    
-        await goal.save()
-        res.status(200).json(goal)
+        let goal = await Goal.findOne({ _id: req.params['id'], owner: userId })
 
+        if(!goal){
+            res.status(404).json({message: "Goal not found!"})
+        } else {
+            const updateGoalData = req.body;
+            if(updateGoalData.milestones){
+                goal.milestones = updateGoalData.milestones;
+                goal.progress = calculateProgress(updateGoalData.milestones);
+                goal.status = goal!.progress === 100 ? "completed" : goal.progress > 0 ? "in-progress": "pending"
+            }
+
+            goal.set(updateGoalData)
+
+            await goal.save()
+            res.status(200).json(goal)
+        }
+    } catch (error) {
+        console.error("Error updating goal:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 };
 
-export const deleteGoal = async (req: Request, res: Response) => {
+export const deleteGoal = async (req: Request, res: Response): Promise<void> => {
     try {
-        const goal = await Goal.findOneAndDelete({ _id: req.params['id'], owner: req.user._id })
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
+        const goal = await Goal.findOneAndDelete({ _id: req.params['id'], owner: userId })
         if(goal)
             res.status(200).json({ message: "Goal Deleted!"} )
         else
             res.status(404).json({ message: "Goal not found!"} )
     } catch (err){
-        console.error(err)
+        console.error("Error deleting goal:", err);
         res.status(500).json({ message: "Internal server error!" })
     }
 }

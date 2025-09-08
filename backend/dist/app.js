@@ -12,6 +12,9 @@ const milestone_route_1 = __importDefault(require("./routes/milestone.route"));
 const dailyTask_routes_1 = __importDefault(require("./routes/dailyTask.routes"));
 const habit_routes_1 = __importDefault(require("./routes/habit.routes"));
 const analytics_routes_1 = __importDefault(require("./routes/analytics.routes"));
+const quest_routes_1 = __importDefault(require("./routes/quest.routes"));
+const xp_routes_1 = __importDefault(require("./routes/xp.routes"));
+const reward_routes_1 = __importDefault(require("./routes/reward.routes"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
@@ -25,5 +28,8 @@ app.use('/api/milestones', milestone_route_1.default);
 app.use('/api/daily-tasks', dailyTask_routes_1.default);
 app.use('/api/habits', habit_routes_1.default);
 app.use("/api/analytics", analytics_routes_1.default);
+app.use('/api/quests', quest_routes_1.default);
+app.use('/api/xp', xp_routes_1.default);
+app.use('/api/rewards', reward_routes_1.default);
 exports.default = app;
 //# sourceMappingURL=app.js.map

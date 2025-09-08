@@ -33,29 +33,105 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteMyTask = exports.markTaskComplete = exports.getMyTodayTasks = exports.createDailyTask = void 0;
+exports.deleteMyTask = exports.markTaskComplete = exports.updateMyTask = exports.getMyTodayTasks = exports.getMyTasks = exports.createDailyTask = void 0;
 const taskService = __importStar(require("../services/dailyTask.service"));
 const createDailyTask = async (req, res) => {
-    const task = await taskService.createTask({
-        ...req.body,
-        user: req.user._id,
-    });
-    res.status(201).json(task);
+    try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        const task = await taskService.createTask({
+            ...req.body,
+            user: userId,
+        });
+        res.status(201).json(task);
+    }
+    catch (error) {
+        console.error("Error creating task:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
 };
 exports.createDailyTask = createDailyTask;
+const getMyTasks = async (req, res) => {
+    try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        const tasks = await taskService.getAllTasks(userId);
+        res.json(tasks);
+    }
+    catch (error) {
+        console.error("Error getting tasks:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+exports.getMyTasks = getMyTasks;
 const getMyTodayTasks = async (req, res) => {
-    const tasks = await taskService.getTodayTasks(req.user._id);
-    res.json(tasks);
+    try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        const tasks = await taskService.getTodayTasks(userId);
+        res.json(tasks);
+    }
+    catch (error) {
+        console.error("Error getting today tasks:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
 };
 exports.getMyTodayTasks = getMyTodayTasks;
+const updateMyTask = async (req, res) => {
+    try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        const task = await taskService.updateTask(req.params['id'], userId, req.body);
+        res.json(task);
+    }
+    catch (error) {
+        console.error("Error updating task:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+exports.updateMyTask = updateMyTask;
 const markTaskComplete = async (req, res) => {
-    const task = await taskService.completeTask(req.params['id'], req.user._id);
-    res.json({ message: 'Task completed', task });
+    try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        const task = await taskService.completeTask(req.params['id'], userId);
+        res.json({ message: 'Task completed', task });
+    }
+    catch (error) {
+        console.error("Error completing task:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
 };
 exports.markTaskComplete = markTaskComplete;
 const deleteMyTask = async (req, res) => {
-    await taskService.deleteTask(req.params['id']);
-    res.status(204).send();
+    try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        await taskService.deleteTask(req.params['id'], userId);
+        res.status(204).send();
+    }
+    catch (error) {
+        console.error("Error deleting task:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
 };
 exports.deleteMyTask = deleteMyTask;
 //# sourceMappingURL=dailyTask.controller.js.map

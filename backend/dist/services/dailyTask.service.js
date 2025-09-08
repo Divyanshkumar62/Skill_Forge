@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTask = exports.completeTask = exports.getTodayTasks = exports.createTask = void 0;
+exports.deleteTask = exports.completeTask = exports.updateTask = exports.getTodayTasks = exports.getAllTasks = exports.createTask = void 0;
 const dailyTask_model_1 = require("../models/dailyTask.model");
 const badge_service_1 = require("./badge.service");
 const streak_service_1 = require("./streak.service");
@@ -9,6 +9,10 @@ const createTask = async (data) => {
     return await dailyTask_model_1.DailyTask.create(data);
 };
 exports.createTask = createTask;
+const getAllTasks = async (userId) => {
+    return await dailyTask_model_1.DailyTask.find({ user: userId });
+};
+exports.getAllTasks = getAllTasks;
 const getTodayTasks = async (userId) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -20,6 +24,13 @@ const getTodayTasks = async (userId) => {
     });
 };
 exports.getTodayTasks = getTodayTasks;
+const updateTask = async (taskId, userId, updateData) => {
+    const task = await dailyTask_model_1.DailyTask.findOneAndUpdate({ _id: taskId, user: userId }, updateData, { new: true });
+    if (!task)
+        throw new Error("Task not found or unauthorized");
+    return task;
+};
+exports.updateTask = updateTask;
 const completeTask = async (taskId, userId) => {
     const task = await dailyTask_model_1.DailyTask.findOneAndUpdate({ _id: taskId, user: userId }, { completed: true, completedAt: new Date() }, { new: true });
     if (!task)
@@ -30,8 +41,8 @@ const completeTask = async (taskId, userId) => {
     return task;
 };
 exports.completeTask = completeTask;
-const deleteTask = async (taskId) => {
-    return await dailyTask_model_1.DailyTask.findByIdAndDelete(taskId);
+const deleteTask = async (taskId, userId) => {
+    return await dailyTask_model_1.DailyTask.findOneAndDelete({ _id: taskId, user: userId });
 };
 exports.deleteTask = deleteTask;
 //# sourceMappingURL=dailyTask.service.js.map

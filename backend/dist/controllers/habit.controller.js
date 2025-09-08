@@ -38,9 +38,14 @@ const habitService = __importStar(require("../services/habit.service"));
 const activity_service_1 = require("../services/activity.service");
 const createHabit = async (req, res) => {
     try {
-        const habit = await habitService.createHabit(req.user._id, req.body);
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        const habit = await habitService.createHabit(userId, req.body);
         res.status(201).json(habit);
-        await (0, activity_service_1.logActivity)(req.user._id, "habit_created", `Created habit "${habit.title}"`, {
+        await (0, activity_service_1.logActivity)(userId, "habit_created", `Created habit "${habit.title}"`, {
             habitId: habit._id,
         });
     }
@@ -51,7 +56,12 @@ const createHabit = async (req, res) => {
 exports.createHabit = createHabit;
 const getHabits = async (req, res) => {
     try {
-        const habits = await habitService.getHabits(req.user._id);
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        const habits = await habitService.getHabits(userId);
         res.status(200).json(habits);
     }
     catch (err) {
@@ -61,7 +71,12 @@ const getHabits = async (req, res) => {
 exports.getHabits = getHabits;
 const updateHabit = async (req, res) => {
     try {
-        const habit = await habitService.updateHabit(req.params['id'], req.user._id, req.body);
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        const habit = await habitService.updateHabit(req.params['id'], userId, req.body);
         res.status(200).json(habit);
     }
     catch (err) {
@@ -71,7 +86,12 @@ const updateHabit = async (req, res) => {
 exports.updateHabit = updateHabit;
 const deleteHabit = async (req, res) => {
     try {
-        await habitService.deleteHabit(req.params['id'], req.user._id);
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        await habitService.deleteHabit(req.params['id'], userId);
         res.status(204).send();
     }
     catch (err) {
@@ -81,8 +101,13 @@ const deleteHabit = async (req, res) => {
 exports.deleteHabit = deleteHabit;
 const completeHabit = async (req, res) => {
     try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
         const timezone = req.body.timezone || 'Etc/UTC';
-        const updatedHabit = await habitService.completeHabit(req.params['id'], req.user._id, timezone);
+        const updatedHabit = await habitService.completeHabit(req.params['id'], userId, timezone);
         res.status(200).json(updatedHabit);
     }
     catch (err) {
@@ -92,7 +117,12 @@ const completeHabit = async (req, res) => {
 exports.completeHabit = completeHabit;
 const getHabitStreak = async (req, res) => {
     try {
-        const streakInfo = await habitService.getHabitStreak(req.params['id'], req.user._id);
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        const streakInfo = await habitService.getHabitStreak(req.params['id'], userId);
         res.status(200).json(streakInfo);
     }
     catch (err) {

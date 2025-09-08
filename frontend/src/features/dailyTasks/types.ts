@@ -2,6 +2,7 @@ export interface DailyTask {
   _id: string;
   user: string;
   goal?: string;
+  habit?: string;
   title: string;
   description?: string;
   dueDate: string;
@@ -16,6 +17,7 @@ export interface CreateTaskData {
   description?: string;
   dueDate: string;
   goalId?: string;
+  habitId?: string;
 }
 
 export interface UpdateTaskData {

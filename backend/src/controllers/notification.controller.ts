@@ -7,15 +7,15 @@ export const getNotifications = async (
   res: Response
 ): Promise<void> => {
   try {
-    if (!req.user || !req.user.id) {
+    const userId = req.user?._id;
+    if (!userId) {
       res.status(401).json({ error: "User not authenticated" });
       return;
     }
 
-    const userId = req.user.id;
     // console.log("userid--->", userId);
     // console.log("req.user--->", req.user);
-    if (!mongoose.Types.ObjectId.isValid(userId || '')) {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
       res.status(400).json({ error: "Invalid user ID format" });
       return;
     }

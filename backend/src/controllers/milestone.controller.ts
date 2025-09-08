@@ -9,12 +9,18 @@ export const createMilestone = async (req: Request, res: Response): Promise<void
     const { title } = req.body;
 
     try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
         const goal = await Goal.findById(goalId)
         if(!goal){
             res.status(404).json({ message: "Goal not found" });
             return;
         }
-        if(goal.owner.toString() !== req.user.id){
+        if(goal.owner.toString() !== userId){
             res.status(403).json({ message: "You are not authorized to create a milestone for this goal" });
             return;
         }
@@ -24,9 +30,9 @@ export const createMilestone = async (req: Request, res: Response): Promise<void
         };
         goal.milestones.push(newMilestone);
         await goal.save();
-        
+
         res.status(201).json({ message: "Milestone created successfully", milestone: newMilestone });
-        await checkAndAwardBadges(req.user.id);
+        await checkAndAwardBadges(userId);
 
     } catch (error) {
         console.error("Error creating milestone:", error);
@@ -41,12 +47,18 @@ export const completeMilestone = async (
   const { goalId, milestoneId } = req.params;
 
   try {
+    const userId = req.user?._id;
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
     const goal = await Goal.findById(goalId);
     if (!goal) {
       res.status(404).json({ message: "Goal not found!" });
       return;
     }
-    if (goal.owner.toString() !== req.user.id) {
+    if (goal.owner.toString() !== userId) {
       res
         .status(403)
         .json({
@@ -54,7 +66,7 @@ export const completeMilestone = async (
         });
       return;
     }
-   
+
     const milestone = goal.milestones.id(milestoneId)
     if (!milestone) {
       res.status(404).json({ message: "Milestone not found" });
@@ -62,18 +74,18 @@ export const completeMilestone = async (
     }
     milestone.completed = true;
 
-    await awardXP(req.user.id, 20);
-    
+    await awardXP(userId, 20);
+
     const total = goal.milestones.length;
     const completed = goal.milestones.filter(m => m.completed).length;
     goal.progress = total > 0 ? (completed / total) * 100 : 0;
-    
+
     await goal.save();
     res.status(200).json({ message: "Milestone completed successfully", milestone });
 
-    await checkAndAwardBadges(req.user.id);
-    
-    await updateStreak(req.user.id); 
+    await checkAndAwardBadges(userId);
+
+    await updateStreak(userId);
   } catch (error) {
     console.error("Error completing milestone:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -88,12 +100,18 @@ export const updateMilestone = async (
   const { title } = req.body;
 
   try {
+    const userId = req.user?._id;
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
     const goal = await Goal.findById(goalId);
     if (!goal) {
       res.status(404).json({ message: "Goal not found" });
       return;
     }
-    if (goal.owner.toString() !== req.user.id) {
+    if (goal.owner.toString() !== userId) {
       res
         .status(403)
         .json({
@@ -125,15 +143,19 @@ export const deleteMilestone = async (req: Request, res: Response): Promise<void
     const { goalId, milestoneId } = req.params;
 
     try {
-        
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
         const goal = await Goal.findById(goalId);
         if (!goal) {
             res.status(404).json({ message: "Goal not found" });
             return;
         }
 
-   
-        if (goal.owner.toString() !== req.user.id.toString()) {
+        if (goal.owner.toString() !== userId) {
             res.status(403).json({ message: "You are not authorized to modify this goal" });
             return;
         }
@@ -144,13 +166,11 @@ export const deleteMilestone = async (req: Request, res: Response): Promise<void
         if (index !== -1) {
           goal.milestones.splice(index, 1); // Remove the milestone at the given index
         }
-        
-    
+
         const total = goal.milestones.length;
         const completed = goal.milestones.filter((m) => m.completed).length;
         goal.progress = total > 0 ? (completed / total) * 100 : 0;
 
-    
         await goal.save();
         res.status(200).json({ message: "Milestone deleted successfully" });
     } catch (error) {

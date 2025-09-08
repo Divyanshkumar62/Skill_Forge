@@ -12,12 +12,17 @@ const createMilestone = async (req, res) => {
     const { goalId } = req.params;
     const { title } = req.body;
     try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
         const goal = await goal_model_1.default.findById(goalId);
         if (!goal) {
             res.status(404).json({ message: "Goal not found" });
             return;
         }
-        if (goal.owner.toString() !== req.user.id) {
+        if (goal.owner.toString() !== userId) {
             res.status(403).json({ message: "You are not authorized to create a milestone for this goal" });
             return;
         }
@@ -28,7 +33,7 @@ const createMilestone = async (req, res) => {
         goal.milestones.push(newMilestone);
         await goal.save();
         res.status(201).json({ message: "Milestone created successfully", milestone: newMilestone });
-        await (0, badge_service_1.checkAndAwardBadges)(req.user.id);
+        await (0, badge_service_1.checkAndAwardBadges)(userId);
     }
     catch (error) {
         console.error("Error creating milestone:", error);
@@ -39,12 +44,17 @@ exports.createMilestone = createMilestone;
 const completeMilestone = async (req, res) => {
     const { goalId, milestoneId } = req.params;
     try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
         const goal = await goal_model_1.default.findById(goalId);
         if (!goal) {
             res.status(404).json({ message: "Goal not found!" });
             return;
         }
-        if (goal.owner.toString() !== req.user.id) {
+        if (goal.owner.toString() !== userId) {
             res
                 .status(403)
                 .json({
@@ -58,14 +68,14 @@ const completeMilestone = async (req, res) => {
             return;
         }
         milestone.completed = true;
-        await (0, xp_service_1.awardXP)(req.user.id, 20);
+        await (0, xp_service_1.awardXP)(userId, 20);
         const total = goal.milestones.length;
         const completed = goal.milestones.filter(m => m.completed).length;
         goal.progress = total > 0 ? (completed / total) * 100 : 0;
         await goal.save();
         res.status(200).json({ message: "Milestone completed successfully", milestone });
-        await (0, badge_service_1.checkAndAwardBadges)(req.user.id);
-        await (0, streak_service_1.updateStreak)(req.user.id);
+        await (0, badge_service_1.checkAndAwardBadges)(userId);
+        await (0, streak_service_1.updateStreak)(userId);
     }
     catch (error) {
         console.error("Error completing milestone:", error);
@@ -77,12 +87,17 @@ const updateMilestone = async (req, res) => {
     const { goalId, milestoneId } = req.params;
     const { title } = req.body;
     try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
         const goal = await goal_model_1.default.findById(goalId);
         if (!goal) {
             res.status(404).json({ message: "Goal not found" });
             return;
         }
-        if (goal.owner.toString() !== req.user.id) {
+        if (goal.owner.toString() !== userId) {
             res
                 .status(403)
                 .json({
@@ -113,12 +128,17 @@ exports.updateMilestone = updateMilestone;
 const deleteMilestone = async (req, res) => {
     const { goalId, milestoneId } = req.params;
     try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
         const goal = await goal_model_1.default.findById(goalId);
         if (!goal) {
             res.status(404).json({ message: "Goal not found" });
             return;
         }
-        if (goal.owner.toString() !== req.user.id.toString()) {
+        if (goal.owner.toString() !== userId) {
             res.status(403).json({ message: "You are not authorized to modify this goal" });
             return;
         }

@@ -1,16 +1,18 @@
 
+import { useNavigate } from "react-router-dom";
 import AuthLayout from "../../features/auth/components/AuthLayout";
 import LoginForm from "../../features/auth/components/LoginForm";
 import { useAuth } from "../../features/auth/store";
 
 export default function Login() {
+  const navigate = useNavigate();
   const login = useAuth((s) => s.login);
 
   const handleLoginSuccess = (userData: any) => {
     // Store token and user data in auth store with correct AuthResponse format
     const authResponse = {
       user: {
-        id: userData.id,
+        id: userData.id ? userData.id : userData._id, // handle backend difference
         name: userData.name,
         email: userData.email,
         xp: userData.xp,
@@ -30,6 +32,9 @@ export default function Login() {
         loadBadgeData();
       });
     }
+
+    // Redirect to dashboard after successful login
+    navigate("/dashboard");
   };
 
   return (

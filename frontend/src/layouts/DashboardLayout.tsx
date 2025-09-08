@@ -1,5 +1,8 @@
 import { useAuth } from "../features/auth/store";
 import { useNavigate, Link, useLocation } from "react-router-dom";
+import XpBar from "../components/gamification/XpBar";
+import { useGamification } from "../features/gamification/store";
+import NotificationBell from "../components/notifications/NotificationBell";
 
 export default function DashboardLayout({
   children,
@@ -9,6 +12,7 @@ export default function DashboardLayout({
   const logout = useAuth((s) => s.logout);
   const navigate = useNavigate();
   const location = useLocation();
+  const { xp, level } = useGamification();
 
   const handleLogout = () => {
     logout();
@@ -74,6 +78,17 @@ export default function DashboardLayout({
 
       {/* Main Content - System Interface Style */}
       <div className="flex-1 flex flex-col">
+        {/* Top Header with Notifications */}
+        <header className="w-full bg-gradient-to-r from-slate-900/95 via-blue-950/30 to-slate-900/95 border-b border-cyan-500/20 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-cyan-500/5" />
+          <div className="relative max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
+            <div className="text-cyan-400 font-semibold">
+              SYSTEM STATUS • Level {level}
+            </div>
+            <NotificationBell />
+          </div>
+        </header>
+
         <main className="flex-1 p-8 bg-gradient-to-br from-slate-900/95 via-blue-950/30 to-slate-900/95 min-h-screen relative">
           {/* System Interface Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 via-transparent to-slate-900/50 pointer-events-none" />
@@ -81,6 +96,11 @@ export default function DashboardLayout({
           {/* Cyber Interface Borders */}
           <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent" />
           <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-500/60 to-transparent" />
+
+          {/* XP Progress Header */}
+          <div className="relative mb-6">
+            <XpBar currentXp={xp} level={level} />
+          </div>
 
           <div className="relative max-w-7xl mx-auto text-slate-100">
             {children}

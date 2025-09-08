@@ -8,7 +8,7 @@ const ProtectedRoute: React.FC = () => {
 
   // If no token or user, redirect to login
   if (!token || !user) {
-    return <Navigate to="/auth/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   // User is authenticated, render the child routes

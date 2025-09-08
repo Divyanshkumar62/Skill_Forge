@@ -7,7 +7,6 @@ exports.startGoalReminderJob = void 0;
 const node_cron_1 = __importDefault(require("node-cron"));
 const goal_model_1 = __importDefault(require("../models/goal.model"));
 const notify_1 = require("../utils/notify");
-const email_1 = require("../utils/email");
 const dayjs_1 = __importDefault(require("dayjs"));
 const startGoalReminderJob = () => {
     node_cron_1.default.schedule("0 8 * * *", async () => {
@@ -28,16 +27,15 @@ const startGoalReminderJob = () => {
                     const dueDate = (0, dayjs_1.default)(goal.dueDate);
                     const diffDays = dueDate.diff(today, "day");
                     if (diffDays === 2) {
-                        const message = `⏳ Your goal "${goal.title}" is due in 2 days.`;
+                        const message = `⏳ Your goal "${goal.title}" is due in 2 days. Take action now to achieve your objective!`;
                         console.log(`Creating reminder for goal ${goal._id}`);
-                        await (0, notify_1.createNotification)(user._id, message, "reminder");
-                        await (0, email_1.sendEmailReminder)(user.email, "Goal Reminder", message);
+                        await (0, notify_1.createReminder)(user._id, message, "reminder");
                     }
                     if (diffDays <= -3) {
-                        const message = `⚠️ Your goal "${goal.title}" is overdue by ${-diffDays} days. Let's fix this!`;
+                        const overdueDays = -diffDays;
+                        const message = `⚠️ Your goal "${goal.title}" is overdue by ${overdueDays} days. Time to get back on track and complete your mission!`;
                         console.log(`Creating overdue notification for goal ${goal._id}`);
-                        await (0, notify_1.createNotification)(user._id, message, "goal");
-                        await (0, email_1.sendEmailReminder)(user.email, "Overdue Goal Alert", message);
+                        await (0, notify_1.createReminder)(user._id, message, "goal");
                     }
                 }
                 catch (error) {

@@ -5,8 +5,10 @@ interface DailyTasksState {
   tasks: DailyTask[];
   loading: boolean;
   error: string | null;
+  fetchTasks: () => Promise<void>;
   fetchTodayTasks: () => Promise<void>;
   createTask: (data: CreateTaskData) => Promise<void>;
+  updateTask: (id: string, data: any) => Promise<void>;
   markTaskComplete: (id: string) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
 }
@@ -15,6 +17,16 @@ export const useDailyTasks = create<DailyTasksState>((set, get) => ({
   tasks: [],
   loading: false,
   error: null,
+
+  fetchTasks: async () => {
+    set({ loading: true, error: null });
+    try {
+      const response = await import("../../services/dailyTasks").then(m => m.getTasks());
+      set({ tasks: response.data, loading: false });
+    } catch (error) {
+      set({ error: "Failed to fetch tasks", loading: false });
+    }
+  },
 
   fetchTodayTasks: async () => {
     set({ loading: true, error: null });
@@ -34,6 +46,20 @@ export const useDailyTasks = create<DailyTasksState>((set, get) => ({
       set({ tasks: [...tasks, response.data], loading: false });
     } catch (error) {
       set({ error: "Failed to create task", loading: false });
+    }
+  },
+
+  updateTask: async (id, data) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await import("../../services/dailyTasks").then(m => m.updateTask(id, data));
+      const { tasks } = get();
+      set({
+        tasks: tasks.map(t => t._id === id ? response.data : t),
+        loading: false
+      });
+    } catch (error) {
+      set({ error: "Failed to update task", loading: false });
     }
   },
 

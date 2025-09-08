@@ -15,7 +15,12 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+export const getTasks = () => API.get("/daily-tasks");
 export const getTodayTasks = () => API.get("/daily-tasks/today");
-export const createTask = (data: CreateTaskData) => API.post("/daily-tasks", data);
-export const markTaskComplete = (id: string) => API.patch(`/daily-tasks/complete/${id}`);
+export const createTask = (data: CreateTaskData) =>
+  API.post("/daily-tasks", data);
+export const updateTask = (id: string, data: UpdateTaskData) =>
+  API.put(`/daily-tasks/${id}`, data);
+export const markTaskComplete = (id: string) =>
+  API.post(`/daily-tasks/complete/${id}`);
 export const deleteTask = (id: string) => API.delete(`/daily-tasks/${id}`);

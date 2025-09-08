@@ -5,7 +5,14 @@ import User from "../models/user.model";
 declare global {
   namespace Express {
     interface Request {
-      user?: any;
+      user?: Partial<{
+        _id: string;
+        name: string;
+        email: string;
+        xp: number;
+        level: number;
+        password?: string;
+      }>;
     }
   }
 }

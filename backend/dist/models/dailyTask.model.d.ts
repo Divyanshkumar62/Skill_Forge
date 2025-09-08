@@ -2,6 +2,7 @@ import mongoose, { Document } from 'mongoose';
 export interface IDailyTask extends Document {
     user: mongoose.Types.ObjectId;
     goal?: mongoose.Types.ObjectId;
+    habit?: mongoose.Types.ObjectId;
     title: string;
     description?: string;
     dueDate: Date;

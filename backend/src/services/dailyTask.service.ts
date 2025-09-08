@@ -3,8 +3,12 @@ import { checkAndAwardBadges } from "./badge.service";
 import { updateStreak } from "./streak.service";
 import { awardXP } from "./xp.service";
 
-export const createTask = async (data: string) => {
+export const createTask = async (data: any) => {
     return await DailyTask.create(data);
+}
+
+export const getAllTasks = async (userId: string) => {
+    return await DailyTask.find({ user: userId });
 }
 
 export const getTodayTasks = async (userId: string) => {
@@ -19,11 +23,21 @@ export const getTodayTasks = async (userId: string) => {
     });
 }
 
+export const updateTask = async (taskId: string, userId: string, updateData: any) => {
+    const task = await DailyTask.findOneAndUpdate(
+        { _id: taskId, user: userId },
+        updateData,
+        { new: true }
+    );
+    if (!task) throw new Error("Task not found or unauthorized");
+    return task;
+}
+
 export const completeTask = async (taskId: string, userId: string) => {
-    const task = await DailyTask.findOneAndUpdate( 
-        { _id: taskId, user: userId }, 
-        { completed: true, completedAt: new Date() }, 
-        { new: true } 
+    const task = await DailyTask.findOneAndUpdate(
+        { _id: taskId, user: userId },
+        { completed: true, completedAt: new Date() },
+        { new: true }
     );
     if(!task)
         throw new Error("Task not found or unauthorized")
@@ -35,6 +49,6 @@ export const completeTask = async (taskId: string, userId: string) => {
     return task;
 };
 
-export const deleteTask = async (taskId: string) => {
-    return await DailyTask.findByIdAndDelete(taskId);
+export const deleteTask = async (taskId: string, userId: string) => {
+    return await DailyTask.findOneAndDelete({ _id: taskId, user: userId });
 }

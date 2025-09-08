@@ -1,7 +1,6 @@
 import cron from "node-cron";
 import Goal from "../models/goal.model";
-import { createNotification } from "../utils/notify";
-import { sendEmailReminder } from "../utils/email";
+import { createReminder } from "../utils/notify";
 import dayjs from "dayjs";
 
 export const startGoalReminderJob = () => {
@@ -28,21 +27,18 @@ export const startGoalReminderJob = () => {
           const diffDays = dueDate.diff(today, "day");
 
           if (diffDays === 2) {
-            const message = `⏳ Your goal "${goal.title}" is due in 2 days.`;
+            const message = `⏳ Your goal "${goal.title}" is due in 2 days. Take action now to achieve your objective!`;
             console.log(`Creating reminder for goal ${goal._id}`);
 
-            await createNotification(user._id, message, "reminder");
-            await sendEmailReminder(user.email, "Goal Reminder", message);
+            await createReminder(user._id, message, "reminder");
           }
 
           if (diffDays <= -3) {
-            const message = `⚠️ Your goal "${
-              goal.title
-            }" is overdue by ${-diffDays} days. Let's fix this!`;
+            const overdueDays = -diffDays;
+            const message = `⚠️ Your goal "${goal.title}" is overdue by ${overdueDays} days. Time to get back on track and complete your mission!`;
             console.log(`Creating overdue notification for goal ${goal._id}`);
 
-            await createNotification(user._id, message, "goal");
-            await sendEmailReminder(user.email, "Overdue Goal Alert", message);
+            await createReminder(user._id, message, "goal");
           }
         } catch (error) {
           console.error(`Error processing goal ${goal._id}:`, error);

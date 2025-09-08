@@ -11,10 +11,12 @@ import {
   FaCalendarAlt,
   FaList,
   FaTrophy,
+  FaClock,
 } from "react-icons/fa";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import MessageDisplay from "../../components/MessageDisplay";
 import { useGoals } from "../../features/goals/store";
+import { useDailyTasks } from "../../features/dailyTasks/store";
 import type { Goal } from "../../features/goals/types";
 import * as milestoneService from "../../services/milestones";
 
@@ -29,6 +31,8 @@ export default function Goals() {
     deleteGoal,
     completeGoal,
   } = useGoals();
+
+  const { createTask } = useDailyTasks();
 
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
@@ -137,6 +141,21 @@ export default function Goals() {
   const removeMilestone = (index: number) => {
     const newMilestones = formData.milestones.filter((_, i) => i !== index);
     setFormData({ ...formData, milestones: newMilestones });
+  };
+
+  const convertGoalToTask = async (goal: Goal) => {
+    try {
+      await createTask({
+        title: goal.title,
+        description: goal.description,
+        dueDate: new Date().toISOString().split('T')[0],
+        goalId: goal._id
+      });
+      alert('Goal converted to daily task successfully!');
+    } catch (error) {
+      console.error('Failed to convert:', error);
+      alert('Failed to convert goal to task.');
+    }
   };
 
   if (loading)
@@ -377,13 +396,20 @@ export default function Goals() {
                 )}
 
                 {/* Action buttons */}
-                <div className="flex space-x-2">
+                <div className="flex space-x-1">
                   <button
                     onClick={() => handleEdit(goal)}
                     className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-1 text-sm font-medium shadow-lg"
                   >
                     <FaMagic className="text-xs" />
-                    Edit Quest
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => convertGoalToTask(goal)}
+                    className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-1 text-sm font-medium border border-cyan-400/30"
+                  >
+                    <FaClock className="text-xs" />
+                    Convert
                   </button>
                   {goal.progress === 100 && (
                     <button
@@ -391,7 +417,7 @@ export default function Goals() {
                       className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-1 text-sm font-medium shadow-lg border border-yellow-400/30"
                     >
                       <FaTrophy className="text-xs" />
-                      Complete Quest
+                      Complete
                     </button>
                   )}
                   <button

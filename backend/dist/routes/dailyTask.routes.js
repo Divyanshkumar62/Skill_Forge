@@ -40,9 +40,11 @@ const express_1 = __importDefault(require("express"));
 const dailyTaskController = __importStar(require("../controllers/dailyTask.controller"));
 const auth_middleware_1 = require("../middlewares/auth.middleware");
 const router = express_1.default.Router();
+router.get("/", auth_middleware_1.protect, dailyTaskController.getMyTasks);
 router.post("/", auth_middleware_1.protect, dailyTaskController.createDailyTask);
 router.get("/today", auth_middleware_1.protect, dailyTaskController.getMyTodayTasks);
-router.patch("/complete/:id", auth_middleware_1.protect, dailyTaskController.markTaskComplete);
+router.put("/:id", auth_middleware_1.protect, dailyTaskController.updateMyTask);
+router.post("/complete/:id", auth_middleware_1.protect, dailyTaskController.markTaskComplete);
 router.delete("/:id", auth_middleware_1.protect, dailyTaskController.deleteMyTask);
 exports.default = router;
 //# sourceMappingURL=dailyTask.routes.js.map

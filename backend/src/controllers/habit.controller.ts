@@ -2,13 +2,19 @@ import { Request, Response } from "express";
 import * as habitService from "../services/habit.service";
 import { logActivity } from "../services/activity.service";
 
-export const createHabit = async (req: Request, res: Response) => {
+export const createHabit = async (req: Request, res: Response): Promise<void> => {
   try {
-    const habit = await habitService.createHabit(req.user._id, req.body);
+    const userId = req.user?._id;
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
+    const habit = await habitService.createHabit(userId, req.body);
     res.status(201).json(habit);
 
     await logActivity(
-      req.user._id,
+      userId,
       "habit_created",
       `Created habit "${habit.title}"`,
       {
@@ -21,20 +27,32 @@ export const createHabit = async (req: Request, res: Response) => {
   }
 };
 
-export const getHabits = async (req: Request, res: Response) => {
+export const getHabits = async (req: Request, res: Response): Promise<void> => {
   try {
-    const habits = await habitService.getHabits(req.user._id);
+    const userId = req.user?._id;
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
+    const habits = await habitService.getHabits(userId);
     res.status(200).json(habits);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch habits" });
   }
 };
 
-export const updateHabit = async (req: Request, res: Response) => {
+export const updateHabit = async (req: Request, res: Response): Promise<void> => {
   try {
+    const userId = req.user?._id;
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
     const habit = await habitService.updateHabit(
       req.params['id'] as string,
-      req.user._id,
+      userId,
       req.body
     );
     res.status(200).json(habit);
@@ -43,21 +61,33 @@ export const updateHabit = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteHabit = async (req: Request, res: Response) => {
+export const deleteHabit = async (req: Request, res: Response): Promise<void> => {
   try {
-    await habitService.deleteHabit(req.params['id'] as string, req.user._id);
+    const userId = req.user?._id;
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
+    await habitService.deleteHabit(req.params['id'] as string, userId);
     res.status(204).send();
   } catch (err) {
     res.status(500).json({ error: "Failed to delete habit" });
   }
 };
 
-export const completeHabit = async (req: Request, res: Response) => {
+export const completeHabit = async (req: Request, res: Response): Promise<void> => {
   try {
+    const userId = req.user?._id;
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
     const timezone = req.body.timezone || 'Etc/UTC';
     const updatedHabit = await habitService.completeHabit(
       req.params['id'] as string,
-      req.user._id,
+      userId,
       timezone
     );
     res.status(200).json(updatedHabit);
@@ -66,11 +96,17 @@ export const completeHabit = async (req: Request, res: Response) => {
   }
 };
 
-export const getHabitStreak = async (req: Request, res: Response) => {
+export const getHabitStreak = async (req: Request, res: Response): Promise<void> => {
   try {
+    const userId = req.user?._id;
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
     const streakInfo = await habitService.getHabitStreak(
       req.params['id'] as string,
-      req.user._id
+      userId
     );
     res.status(200).json(streakInfo);
   } catch (err: any) {

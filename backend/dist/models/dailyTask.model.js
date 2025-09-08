@@ -45,6 +45,10 @@ const DailyTaskSchema = new mongoose_1.Schema({
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: 'Goal',
     },
+    habit: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: 'Habit',
+    },
     title: {
         type: String,
         required: true
