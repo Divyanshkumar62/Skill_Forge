@@ -12,7 +12,10 @@ import xpRoutes from './routes/xp.routes';
 import rewardRoutes from './routes/reward.routes';
 const app = express()
 
-app.use(cors())
+app.use(cors({
+  origin: "https://skill-forge-clv2ohqgx-ds-projects-71ee473d.vercel.app/",
+  credentials: true
+}));
 app.use(express.json())
 
 app.get("/", (_req, res) => {
