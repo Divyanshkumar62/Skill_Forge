@@ -1,7 +1,7 @@
 import User from "../models/user.model";
 import { createNotification } from "../utils/notify";
 
-const calculateLevel = (xp: number): number => {
+export const calculateLevel = (xp: number): number => {
   if (xp >= 8000) return 7;
   if (xp >= 5500) return 6;
   if (xp >= 3500) return 5;

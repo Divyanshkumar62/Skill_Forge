@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { CreateTaskData } from "./types";
+import type { CreateTaskData, UpdateTaskData } from "./types";
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_BASE,

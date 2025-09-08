@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { FaCheck, FaTrash, FaCalendarAlt } from "react-icons/fa";
+// import { FaCheck, FaTrash, FaCalendarAlt } from "react-icons/fa";
 import DailyTaskCard from "./DailyTaskCard";
 
 interface DailyTask {

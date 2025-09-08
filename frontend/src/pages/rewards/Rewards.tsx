@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaTrophy, FaCoins, FaStar, FaGem, FaCheck, FaLock } from "react-icons/fa";
 import DashboardLayout from "../../layouts/DashboardLayout";
-import MessageDisplay from "../../components/MessageDisplay";
+// import MessageDisplay from "../../components/MessageDisplay";
 
 interface Reward {
   _id: string;

@@ -1,0 +1,695 @@
+openapi: 3.0.0
+info:
+  title: Skill Forge API
+  version: 1.0.0
+  description: |
+    🚀 **Skill Forge API Documentation**
+
+    A production-ready productivity platform with gamification features.
+
+    ## Features
+    - **Gamified Productivity**: XP rewards, levels, badges, streaks
+    - **Task Management**: Create, complete, and track goals
+    - **Analytics**: Progress visualization and insights
+    - **Notifications**: Automated reminders and achievements
+    - **Rewards Shop**: Digital rewards spending system
+
+    ## Authentication
+    All secure endpoints require JWT tokens obtained through login:
+    ```
+    Authorization: Bearer <your-jwt-token>
+    ```
+  contact:
+    name: Skill Forge Team
+    email: contact@skillforge.com
+
+servers:
+  - url: http://localhost:3001
+    description: Development server
+  - url: https://api.skillforge.com
+    description: Production server
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: User's unique identifier
+        name:
+          type: string
+          example: "Gamer Hero"
+        email:
+          type: string
+          format: email
+          example: "hero@skillforge.com"
+        xp:
+          type: integer
+          minimum: 0
+          example: 1250
+        level:
+          type: integer
+          minimum: 1
+          example: 12
+      required:
+        - _id
+        - name
+        - email
+        - xp
+        - level
+
+    Habit:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+          example: "Read for 30 minutes"
+        description:
+          type: string
+          example: "Daily reading habit"
+        frequency:
+          type: string
+          enum: ['daily', 'weekly', 'custom']
+          example: "daily"
+        completedDates:
+          type: array
+          items:
+            type: string
+            format: date-time
+        streakCount:
+          type: integer
+          minimum: 0
+          example: 5
+        xpReward:
+          type: integer
+          minimum: 0
+          example: 10
+      required:
+        - _id
+        - title
+        - frequency
+        - completedDates
+        - streakCount
+        - xpReward
+
+    Goal:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+          example: "Complete project milestone"
+        description:
+          type: string
+          example: "Major project delivery"
+        status:
+          type: string
+          enum: ['pending', 'in-progress', 'completed']
+          example: "in-progress"
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+          example: 75
+        dueDate:
+          type: string
+          format: date-time
+      required:
+        - _id
+        - title
+        - status
+        - progress
+
+    Notification:
+      type: object
+      properties:
+        _id:
+          type: string
+        type:
+          type: string
+          enum: ['achievement', 'reminder', 'goal_complete', 'streak_broken']
+          example: "achievement"
+        title:
+          type: string
+          example: "Achievement Unlocked!"
+        message:
+          type: string
+          example: "Congratulations! You earned the 'First Step' badge"
+        read:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - _id
+        - type
+        - title
+        - message
+        - read
+        - createdAt
+
+    XPResponse:
+      type: object
+      properties:
+        xp:
+          type: integer
+          example: 1250
+        level:
+          type: integer
+          example: 12
+        nextLevelXp:
+          type: integer
+          example: 1300
+
+    AnalyticsOverview:
+      type: object
+      properties:
+        overview:
+          type: object
+          properties:
+            totalXp:
+              type: integer
+              example: 1250
+            currentLevel:
+              type: integer
+              example: 12
+            nextLevelXp:
+              type: integer
+              example: 1300
+            consistencyScore:
+              type: integer
+              minimum: 0
+              maximum: 100
+              example: 85
+            currentStreak:
+              type: integer
+              example: 7
+            longestStreak:
+              type: integer
+              example: 14
+        weeklyXp:
+          type: object
+          additionalProperties:
+            type: integer
+          example:
+            "2024-01-15": 25
+            "2024-01-16": 30
+            "2024-01-17": 45
+
+    SkillTree:
+      type: object
+      properties:
+        skillTree:
+          type: object
+          properties:
+            axes:
+              type: object
+              properties:
+                productivity:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: "Productivity"
+                    points:
+                      type: integer
+                      example: 450
+                    maxPoints:
+                      type: integer
+                      example: 1000
+                discipline:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: "Discipline"
+                    points:
+                      type: integer
+                      example: 280
+                    maxPoints:
+                      type: integer
+                      example: 1000
+                learning:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: "Learning"
+                    points:
+                      type: integer
+                      example: 150
+                    maxPoints:
+                      type: integer
+                      example: 1000
+                health:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: "Health"
+                    points:
+                      type: integer
+                      example: 90
+                    maxPoints:
+                      type: integer
+                      example: 1000
+            monthlyActivityCount:
+              type: integer
+              example: 23
+            currentLevel:
+              type: integer
+              example: 4
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "User not found"
+        status:
+          type: integer
+          example: 404
+
+    AuthRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: "hero@skillforge.com"
+        password:
+          type: string
+          minLength: 6
+          example: "password123"
+      required:
+        - email
+        - password
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+    RegisterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 2
+          example: "Gamer Hero"
+        email:
+          type: string
+          format: email
+          example: "hero@skillforge.com"
+        password:
+          type: string
+          minLength: 6
+          example: "password123"
+      required:
+        - name
+        - email
+        - password
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      description: Create a new user account with gamification tracking
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User created successfully"
+                  user:
+                    $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Validation error or user already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/login:
+    post:
+      summary: User login
+      description: Authenticate user and return JWT token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /habits:
+    get:
+      summary: Get user habits
+      description: Retrieve all habits for the authenticated user
+      tags:
+        - Habits
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Habits retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Habit'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Create a new habit
+      description: Create a new habit with gamification rewards
+      tags:
+        - Habits
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Read for 30 minutes"
+                description:
+                  type: string
+                  example: "Daily reading improvement"
+                frequency:
+                  type: string
+                  enum: ['daily', 'weekly', 'custom']
+                  example: "daily"
+                xpReward:
+                  type: integer
+                  minimum: 0
+                  example: 10
+              required:
+                - title
+                - frequency
+      responses:
+        '201':
+          description: Habit created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Habit created successfully"
+                  habit:
+                    $ref: '#/components/schemas/Habit'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /tasks:
+    get:
+      summary: Get user tasks
+      description: Retrieve all tasks for the authenticated user
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Tasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    title:
+                      type: string
+                    completed:
+                      type: boolean
+                    xpReward:
+                      type: integer
+                    createdAt:
+                      type: string
+                      format: date-time
+
+    post:
+      summary: Create a new task
+      description: Create a new task with XP rewards
+      tags:
+        - Tasks
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Complete project plan"
+                xpReward:
+                  type: integer
+                  minimum: 0
+                  example: 15
+              required:
+                - title
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Task created successfully"
+                  task:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      title:
+                        type: string
+                      completed:
+                        type: boolean
+                        example: false
+                      xpReward:
+                        type: integer
+                      createdAt:
+                        type: string
+                        format: date-time
+
+  /xp/earn:
+    post:
+      summary: Award XP to user
+      description: Award experience points for completing tasks/goals
+      tags:
+        - Gamification
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                xpAmount:
+                  type: integer
+                  minimum: 0
+                  maximum: 1000
+                  example: 50
+              required:
+                - xpAmount
+      responses:
+        '200':
+          description: XP awarded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XPResponse'
+        '400':
+          description: Invalid XP amount or user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /analytics/overview:
+    get:
+      summary: Get analytics overview
+      description: Get user progress analytics, streaks, and consistency score
+      tags:
+        - Analytics
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Analytics data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsOverview'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /analytics/skillTree:
+    get:
+      summary: Get skill tree progress
+      description: Get detailed skill tree progress across different areas
+      tags:
+        - Analytics
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Skill tree data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillTree'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /notifications:
+    get:
+      summary: Get user notifications
+      description: Get paginated list of user notifications
+      tags:
+        - Notifications
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Notifications retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    patch:
+      summary: Mark notification as read
+      description: Mark a specific notification as read
+      tags:
+        - Notifications
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Notification ID to mark as read
+      responses:
+        '200':
+          description: Notification marked as read
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Notification marked as read"
+                  notification:
+                    $ref: '#/components/schemas/Notification'
+        '404':
+          description: Notification not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+tags:
+  - name: Authentication
+    description: User authentication and registration
+  - name: Habits
+    description: Habit creation and management
+  - name: Tasks
+    description: Task creation and completion tracking
+  - name: Gamification
+    description: XP, levels, and badge management
+  - name: Analytics
+    description: Progress tracking and insights
+  - name: Notifications
+    description: In-app notifications and reminders

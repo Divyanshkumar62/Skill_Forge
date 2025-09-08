@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaStar, FaTrophy, FaRocket, FaFire, FaMagic } from "react-icons/fa";
+import { FaTrophy, FaRocket, FaFire, FaMagic } from "react-icons/fa";
 
 interface LevelUpModalProps {
   isOpen: boolean;

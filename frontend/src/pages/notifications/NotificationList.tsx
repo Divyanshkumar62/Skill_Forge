@@ -2,15 +2,14 @@ import { useEffect, useState } from 'react';
 import { Bell, Trash2, CheckCircle, Filter } from 'lucide-react';
 import { useNotifications } from '../../features/notifications/store';
 import { NotificationItem } from '../../components/notifications/NotificationItem';
-import type { Notification } from '../../types/notifications';
+// import type { Notification } from '../../types/notifications';
 
 const NotificationList = () => {
   const {
     notifications,
     loading,
     error,
-    fetchNotifications,
-    deleteNotification
+    fetchNotifications
   } = useNotifications();
 
   const [filter, setFilter] = useState<'all' | 'unread' | 'read'>('all');
@@ -56,30 +55,30 @@ const NotificationList = () => {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  // const formatDate = (dateString: string) => {
+  //   const date = new Date(dateString);
+  //   const now = new Date();
+  //   const diffTime = Math.abs(now.getTime() - date.getTime());
+  //   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) {
-      return date.toLocaleString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      });
-    } else if (diffDays === 1) {
-      return 'Yesterday';
-    } else if (diffDays < 7) {
-      return date.toLocaleDateString('en-US', { weekday: 'long' });
-    } else {
-      return date.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
-    }
-  };
+  //   if (diffDays === 0) {
+  //     return date.toLocaleString('en-US', {
+  //       hour: 'numeric',
+  //       minute: '2-digit',
+  //       hour12: true
+  //     });
+  //   } else if (diffDays === 1) {
+  //     return 'Yesterday';
+  //   } else if (diffDays < 7) {
+  //     return date.toLocaleDateString('en-US', { weekday: 'long' });
+  //   } else {
+  //     return date.toLocaleDateString('en-US', {
+  //       month: 'short',
+  //       day: 'numeric',
+  //       year: 'numeric'
+  //     });
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-gray-900 pt-20 px-4">
@@ -177,7 +176,16 @@ const NotificationList = () => {
             {filteredNotifications.map((notification) => (
               <NotificationItem
                 key={notification._id}
-                notification={notification}
+                notification={{
+                  ...notification,
+                  type: notification.type as
+                    "achievement"
+                    | "gamification"
+                    | "goal"
+                    | "reminder"
+                    | "milestone"
+                    | "tip"
+                }}
                 onClick={handleMarkAsRead}
                 onDelete={handleDelete}
               />

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.awardXP = void 0;
+exports.awardXP = exports.calculateLevel = void 0;
 const user_model_1 = __importDefault(require("../models/user.model"));
 const notify_1 = require("../utils/notify");
 const calculateLevel = (xp) => {
@@ -21,6 +21,7 @@ const calculateLevel = (xp) => {
         return 2;
     return 1;
 };
+exports.calculateLevel = calculateLevel;
 const awardXP = async (userId, xpToAdd) => {
     try {
         const user = await user_model_1.default.findById(userId);
@@ -31,7 +32,7 @@ const awardXP = async (userId, xpToAdd) => {
         // Add XP
         user.xp += xpToAdd;
         // Determine new level based on XP
-        const newLevel = calculateLevel(user.xp);
+        const newLevel = (0, exports.calculateLevel)(user.xp);
         // Check if level changed
         if (newLevel > user.level) {
             user.level = newLevel;

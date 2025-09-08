@@ -42,7 +42,7 @@ export default function Badges() {
                   <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-orange-400/50 shadow-lg">
                     <span className="text-white text-2xl">{badge.icon}</span>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-100 mb-2">{badge.title}</h3>
+                  <h3 className="text-lg font-bold text-slate-100 mb-2">{badge.name}</h3>
                   <p className="text-sm text-slate-400">{badge.description}</p>
                 </div>
               </div>

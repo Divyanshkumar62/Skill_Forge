@@ -10,7 +10,7 @@ const NotificationBell = () => {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useOnClickOutside(dropdownRef, () => setIsOpen(false));
+  useOnClickOutside(dropdownRef as React.RefObject<HTMLElement>, () => setIsOpen(false));
 
   useEffect(() => {
     fetchNotifications();
@@ -19,9 +19,12 @@ const NotificationBell = () => {
   const unreadCount = notifications.filter(n => !n.read).length;
   const recentNotifications = notifications.slice(0, 5);
 
-  const handleNotificationClick = async (notificationId: string) => {
+  const handleMarkAsRead = async (notificationId: string) => {
     await useNotifications.getState().markAsRead(notificationId);
-    setIsOpen(false);
+  };
+
+  const handleDelete = async (notificationId: string) => {
+    await useNotifications.getState().deleteNotification(notificationId);
   };
 
   return (
@@ -66,11 +69,20 @@ const NotificationBell = () => {
               <>
                 {recentNotifications.map((notification) => (
                   <NotificationItem
-                    key={notification._id}
-                    notification={notification}
-                    onClick={handleNotificationClick}
-                    onDelete={(id) => useNotifications.getState().deleteNotification(id)}
-                  />
+                                  key={notification._id}
+                                  notification={{
+                                    ...notification,
+                                    type: notification.type as
+                                      "achievement"
+                                      | "gamification"
+                                      | "goal"
+                                      | "reminder"
+                                      | "milestone"
+                                      | "tip"
+                                  }}
+                                  onClick={handleMarkAsRead}
+                                  onDelete={handleDelete}
+                                />
                 ))}
 
                 {notifications.length > 5 && (
