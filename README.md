@@ -1,4 +1,4 @@
-# 🚀 Skill Forge - Production-Ready Productivity Platform
+# 🚀 Skill Forge - Productivity Platform
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
@@ -72,7 +72,7 @@ A full-stack productivity application that transforms boring task management int
 ### **1. Clone and Setup**
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/skill-forge.git
+git clone https://github.com/Divyanshkumar62/Skill_Forge/
 cd skill-forge
 
 # Setup backend
@@ -111,7 +111,7 @@ EMAIL_FROM=noreply@skillforge.com
 
 #### **Frontend Environment (.env)**
 ```bash
-VITE_API_URL=http://localhost:3001
+VITE_API_URL=http://localhost:3000
 VITE_ENV=development
 ```
 
@@ -138,7 +138,7 @@ mongod
 ```bash
 # Terminal 1: Backend
 cd backend
-npm run dev  # Runs on http://localhost:3001
+npm run dev  # Runs on http://localhost:3000
 
 # Terminal 2: Frontend
 cd frontend
@@ -158,39 +158,7 @@ npm run build
 npm run preview
 ```
 
-### **5. First User Setup**
-1. Open http://localhost:5173 in your browser
-2. Click "Register" and create your first account
-3. Start creating tasks, habits, and goals
-4. Watch your progress in the analytics dashboard
-
-## 🧪 Testing
-
-### **Backend Tests (Jest)**
-```bash
-cd backend
-npm test                 # Run all tests
-npm run test:watch      # Watch mode
-npm run test:coverage   # Coverage report
-```
-
-### **Frontend Tests (Vitest)**
-```bash
-cd frontend
-npm test                 # Run all tests
-npm run test:watch      # Watch mode
-npm run test:coverage   # Coverage report
-```
-
-### **Manual Testing**
-Use the included test scripts:
-```bash
-# Backend auth testing
-npm run test:auth
-
-# Frontend component testing
-npm run test:components
-```
+--- 
 
 ## 📚 API Documentation
 
@@ -335,25 +303,7 @@ git push origin feature/awesome-feature
 - ✅ Documentation updated
 ```
 
-## 🐳 Deployment
 
-### **Containerization**
-```dockerfile
-# Dockerfile examples in project root
-FROM node:18-alpine
-
-# Backend
-WORKDIR /app/backend
-COPY backend/package*.json ./
-RUN npm ci --only=production
-
-# Frontend
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm ci && npm run build
-
-EXPOSE 3000 3001
-```
 
 ### **Environment Variables for Production**
 ```bash
@@ -384,70 +334,11 @@ PORT=3001
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🆘 Troubleshooting
-
-### **Common Issues**
-
-#### **Database Connection Issues**
-```bash
-# Check MongoDB connection
-mongo mongodb://localhost:27017
-
-# For Atlas connection issues
-- Verify IP whitelist
-- Check username/password
-- Ensure network connectivity
-```
-
-#### **Port Conflicts**
-```bash
-# Change ports in environment
-PORT=3002   # Backend
-PORT=5174  # Frontend
-```
-
-#### **JWT Authentication Issues**
-```bash
-# Regenerate JWT secret
-echo $RANDOM | md5sum | head -c 64
-
-# Update .env file
-JWT_SECRET=your-new-secret-here
-```
-
-#### **Testing Issues**
-```bash
-# Clear Jest cache
-npm run test -- --clearCache
-
-# Check test environment
-NODE_ENV=test npm run test
-```
 
 ### **Support**
 - GitHub Issues for bug reports
 - Documentation in `docs/` folder
 - Community discussions in Discussions tab
-
----
-
-## 🎪 Demo Features
-
-### **User Journey**
-1. **Registration**: Create account with gamification profile
-2. **Dashboard**: Overview of XP, level, current streak
-3. **Task Creation**: Add habits, goals, daily tasks
-4. **Progress Tracking**: Visual analytics and insights
-5. **Achievement System**: Unlock badges, earn rewards
-6. **Notification Center**: Smart reminders and updates
-
-### **Sample User Experience**
-- Start with 0 XP, Level 1
-- Complete daily tasks: +10 XP each
-- Maintain 7-day streak: +50 XP bonus
-- Reach Level 2 at 100 XP
-- Unlock "Consistency Master" badge
-- View progress in skill tree analytics
 
 ---
 
