@@ -12,10 +12,19 @@ import xpRoutes from './routes/xp.routes';
 import rewardRoutes from './routes/reward.routes';
 const app = express()
 
+const allowedOrigins = process.env['ALLOWED_ORIGINS']?.split(",") || [];
+
 app.use(cors({
-  origin: "https://skill-forge-clv2ohqgx-ds-projects-71ee473d.vercel.app/",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
 }));
+
 app.use(express.json())
 
 app.get("/", (_req, res) => {
