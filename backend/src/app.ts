@@ -12,18 +12,25 @@ import xpRoutes from './routes/xp.routes';
 import rewardRoutes from './routes/reward.routes';
 const app = express()
 
-const allowedOrigins = process.env['ALLOWED_ORIGINS']?.split(",") || [];
+const allowedOrigins = [
+  "http://localhost:3000", // for local dev
+  "http://localhost:5173", // vite dev server (if you use it)
+  "https://skill-forge-3rkilo9wv-ds-projects-71ee473d.vercel.app", // vercel frontend
+];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps, curl, postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        return callback(new Error("Not allowed by CORS"), false);
+      }
+      return callback(null, true);
+    },
+    credentials: true, // if you're using cookies/auth headers
+  })
+);
 
 app.use(express.json())
 
