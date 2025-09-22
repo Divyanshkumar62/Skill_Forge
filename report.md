@@ -56,7 +56,7 @@ JWT_SECRET = alpha  # CRITICAL: Production secret is too weak
 
 #### 2. **Exposed Database Credentials** ❌
 ```env
-MONGO_URI = "mongodb+srv://kumardivyansh62:rLAAKQV1lvpvx0Dl@cluster0.wyod3.mongodb.net/Skill_Forge"
+MONGO_URI = "mongodb+srv://username:password@cluster.mongodb.net/database_name"
 ```
 **Risk**: Database compromise if .env exposed  
 **Fix**: Use environment variables in production, rotate credentials

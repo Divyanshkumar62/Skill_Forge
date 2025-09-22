@@ -94,7 +94,7 @@ MONGODB_URI=mongodb://localhost:27017/skillforge
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/skillforge?retryWrites=true&w=majority
 
 # JWT Configuration
-JWT_SECRET=your-super-secret-jwt-key-here
+JWT_SECRET=your-super-secure-jwt-secret-key-here-minimum-32-characters
 JWT_EXPIRES_IN=7d
 
 # Server Configuration
@@ -308,8 +308,8 @@ git push origin feature/awesome-feature
 ### **Environment Variables for Production**
 ```bash
 NODE_ENV=production
-MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/skillforge_prod
-JWT_SECRET=your-production-jwt-secret
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/skillforge_prod
+JWT_SECRET=your-production-jwt-secret-minimum-32-characters
 EMAIL_HOST=your-smtp-host
 PORT=3001
 ```

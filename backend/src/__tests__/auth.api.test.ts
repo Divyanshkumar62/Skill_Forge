@@ -196,6 +196,7 @@ describe('Auth Endpoints', () => {
       
       // The last request should be rate limited
       const lastResponse = responses[responses.length - 1];
+      expect(lastResponse).toBeDefined();
       expect(lastResponse.status).toBe(429);
       expect(lastResponse.body.error).toContain('Too many');
     }, 10000);

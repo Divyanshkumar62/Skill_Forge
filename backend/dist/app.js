@@ -16,7 +16,23 @@ const quest_routes_1 = __importDefault(require("./routes/quest.routes"));
 const xp_routes_1 = __importDefault(require("./routes/xp.routes"));
 const reward_routes_1 = __importDefault(require("./routes/reward.routes"));
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)());
+const allowedOrigins = [
+    "http://localhost:3000", // for local dev
+    "http://localhost:5173", // vite dev server (if you use it)
+    "https://skill-forge-3rkilo9wv-ds-projects-71ee473d.vercel.app", // vercel frontend
+];
+app.use((0, cors_1.default)({
+    origin: function (origin, callback) {
+        // allow requests with no origin (like mobile apps, curl, postman)
+        if (!origin)
+            return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            return callback(new Error("Not allowed by CORS"), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true, // if you're using cookies/auth headers
+}));
 app.use(express_1.default.json());
 app.get("/", (_req, res) => {
     res.send("Hello World...!");

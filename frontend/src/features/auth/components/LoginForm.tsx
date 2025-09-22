@@ -99,9 +99,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
           type="email"
           value={formData.email}
           onChange={handleInputChange('email')}
-          className={`w-full px-4 py-3 bg-slate-800/50 border rounded-lg text-white placeholder-slate-400
+          className={`w-full px-4 py-3 bg-solo-accent/20 border rounded-lg text-white placeholder-slate-400
                    focus:outline-none focus:ring-2 transition-all duration-200
-                   ${errors.email ? 'border-red-500/50 focus:ring-red-500' : 'border-slate-600 focus:ring-cyan-500 focus:border-cyan-500'}`}
+                   ${errors.email ? 'border-red-500/50 focus:ring-red-500' : 'border-solo-glow/30 focus:ring-solo-glow focus:border-solo-glow'}`}
           placeholder="your@email.com"
           disabled={loading}
           aria-invalid={!!errors.email}
@@ -125,9 +125,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
             type={showPassword ? "text" : "password"}
             value={formData.password}
             onChange={handleInputChange('password')}
-            className={`w-full px-4 py-3 pr-12 bg-slate-800/50 border rounded-lg text-white placeholder-slate-400
+            className={`w-full px-4 py-3 pr-12 bg-solo-accent/20 border rounded-lg text-white placeholder-slate-400
                      focus:outline-none focus:ring-2 transition-all duration-200
-                     ${errors.password ? 'border-red-500/50 focus:ring-red-500' : 'border-slate-600 focus:ring-cyan-500 focus:border-cyan-500'}`}
+                     ${errors.password ? 'border-red-500/50 focus:ring-red-500' : 'border-solo-glow/30 focus:ring-solo-glow focus:border-solo-glow'}`}
             placeholder="Enter your password"
             disabled={loading}
             aria-invalid={!!errors.password}
@@ -137,7 +137,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-3 text-slate-400 hover:text-slate-200 transition-colors"
+            className="absolute right-3 top-3 text-slate-400 hover:text-solo-glow transition-colors"
             aria-label={showPassword ? "Hide password" : "Show password"}
             disabled={loading}
           >
@@ -155,9 +155,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700
+        className="w-full bg-gradient-to-r from-solo-glow to-solo-purple hover:from-solo-purple hover:to-rarity-legendary
                  text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200
-                 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/25
+                 transform hover:scale-105 shadow-lg hover:shadow-solo-glow/25 animate-power-pulse
                  disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
                  flex items-center justify-center space-x-2"
         aria-describedby="login-button"
@@ -165,12 +165,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
         {loading ? (
           <>
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-            <span>Leveling Up...</span>
+            <span>Awakening...</span>
           </>
         ) : (
           <>
             <FaSignInAlt />
-            <span>Begin Your Journey 🔥</span>
+            <span>Arise, Shadow! ⚡</span>
           </>
         )}
       </button>
@@ -179,9 +179,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
       <div className="text-center space-y-2">
         <Link
           to="/register"
-          className="block text-slate-300 hover:text-cyan-400 transition-colors duration-200 underline"
+          className="block text-slate-300 hover:text-solo-glow transition-colors duration-200 underline"
         >
-          New to Skill Forge? Create your account
+          New Hunter? Create your legend
         </Link>
       </div>
     </form>
