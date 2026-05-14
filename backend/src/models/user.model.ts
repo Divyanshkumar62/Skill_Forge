@@ -106,6 +106,10 @@ const userSchema: Schema<IUser> = new Schema(
   { timestamps: true }
 );
 
+userSchema.index({ lastActivityDate: -1 });
+userSchema.index({ currentStreak: -1 });
+userSchema.index({ level: -1 });
+
 userSchema.pre("save", async function (next) {
     if(!this.isModified("password"))
         return next()

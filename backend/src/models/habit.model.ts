@@ -77,4 +77,9 @@ const habitSchema = new Schema<HabitDocument>(
     { timestamps: true }
 )
 
+habitSchema.index({ user: 1 });
+habitSchema.index({ user: 1, createdAt: -1 });
+habitSchema.index({ user: 1, streakCount: -1 });
+habitSchema.index({ user: 1, frequency: 1 });
+
 export const Habit = mongoose.model<HabitDocument>('Habit', habitSchema)

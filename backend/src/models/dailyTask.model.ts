@@ -47,4 +47,9 @@ const DailyTaskSchema = new Schema<IDailyTask>({
     },
 }, { timestamps: true })
 
+DailyTaskSchema.index({ user: 1 });
+DailyTaskSchema.index({ user: 1, dueDate: 1 });
+DailyTaskSchema.index({ user: 1, completed: 1 });
+DailyTaskSchema.index({ dueDate: 1, completed: 1 });
+
 export const DailyTask = mongoose.model<IDailyTask>("DailyTask", DailyTaskSchema)

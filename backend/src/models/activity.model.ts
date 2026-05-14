@@ -28,4 +28,8 @@ const activitySchema = new Schema<ActivityDocument>(
   { timestamps: { createdAt: true, updatedAt: false } }
 );
 
+activitySchema.index({ user: 1, createdAt: -1 });
+activitySchema.index({ user: 1, type: 1 });
+activitySchema.index({ createdAt: -1 });
+
 export const Activity = mongoose.model<ActivityDocument>('Activity', activitySchema);

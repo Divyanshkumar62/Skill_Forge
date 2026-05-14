@@ -62,4 +62,9 @@ const goalSchema: Schema = new Schema(
   { timestamps: true }
 );
 
+goalSchema.index({ owner: 1 });
+goalSchema.index({ owner: 1, status: 1 });
+goalSchema.index({ owner: 1, dueDate: 1 });
+goalSchema.index({ status: 1, dueDate: 1 });
+
 export default mongoose.model<IGoal>("Goal", goalSchema);
