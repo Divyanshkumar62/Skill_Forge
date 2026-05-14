@@ -7,9 +7,12 @@ export interface Milestone {
 export interface Goal {
   _id: string;
   title: string;
-  description: string;
+  description?: string;
   milestones: Milestone[];
-  status: "pending" | "completed";
+  status: "pending" | "in-progress" | "completed";
   progress: number;
-  dueDate: string;
+  dueDate?: string;
+  owner?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

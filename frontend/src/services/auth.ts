@@ -1,12 +1,42 @@
-import axios from "axios";
+import api, { type ApiResponse } from "../lib/api";
 
-const API = axios.create({ baseURL: import.meta.env.VITE_API_BASE });
+interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  xp: number;
+  level: number;
+}
 
-export const login = (data: { email: string; password: string }) =>
-  API.post("/auth/login", data);
+interface AuthResponse {
+  token: string;
+  user: AuthUser;
+}
 
-export const register = (data: {
+export const login = async (data: { email: string; password: string }): Promise<ApiResponse<AuthResponse>> => {
+  try {
+    const response = await api.post<AuthResponse>("/auth/login", data);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.response?.data?.message || "Login failed"
+    };
+  }
+};
+
+export const register = async (data: {
   name: string;
   email: string;
   password: string;
-}) => API.post("/auth/register", data);
+}): Promise<ApiResponse<AuthResponse>> => {
+  try {
+    const response = await api.post<AuthResponse>("/auth/register", data);
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.response?.data?.message || "Registration failed"
+    };
+  }
+};

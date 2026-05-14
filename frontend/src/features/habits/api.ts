@@ -1,81 +1,63 @@
-import axios from "axios";
+import api, { type ApiResponse } from "../../lib/api";
 import type { CreateHabitData, UpdateHabitData } from "./types";
 
-// Create API instance
-const API = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE || "http://localhost:5000/api",
-});
+interface HabitApiResponse {
+  _id: string;
+  title: string;
+  description?: string;
+  frequency: 'daily' | 'weekly' | 'custom';
+  customDays?: number;
+  daysOfWeek?: number[];
+  startDate?: string;
+  endDate?: string;
+  user: string;
+  completedDates: string[];
+  streakCount: number;
+  lastCompletedDate?: string;
+  xpReward: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
-// Attach token interceptor
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("auth-storage");
-  if (token) {
-    try {
-      const parsed = JSON.parse(token).state;
-      config.headers.Authorization = `Bearer ${parsed.token}`;
-    } catch (error) {
-      console.error("Error parsing auth token:", error);
-    }
-  }
-  return config;
-});
-
-// Add response interceptor for better error handling
-API.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Token expired or invalid, redirect to login
-      localStorage.removeItem("auth-storage");
-      window.location.href = "/auth/login";
-    }
-    return Promise.reject(error);
-  }
-);
-
-// Habit API endpoints with proper error handling
-export const getHabits = async () => {
+export const getHabits = async (): Promise<ApiResponse<HabitApiResponse[]>> => {
   try {
-    const response = await API.get("/habits");
-    return { data: response.data, success: true };
+    const response = await api.get<HabitApiResponse[]>("/habits");
+    return { success: true, data: response.data };
   } catch (error: any) {
     return {
-      data: [],
       success: false,
       error: error.response?.data?.message || "Failed to fetch habits"
     };
   }
 };
 
-export const createHabit = async (data: CreateHabitData) => {
+export const createHabit = async (data: CreateHabitData): Promise<ApiResponse<HabitApiResponse>> => {
   try {
-    const response = await API.post("/habits", data);
-    return { data: response.data, success: true };
+    const response = await api.post<HabitApiResponse>("/habits", data);
+    return { success: true, data: response.data };
   } catch (error: any) {
     return {
-      data: null,
       success: false,
       error: error.response?.data?.message || "Failed to create habit"
     };
   }
 };
 
-export const updateHabit = async (id: string, data: UpdateHabitData) => {
+export const updateHabit = async (id: string, data: UpdateHabitData): Promise<ApiResponse<HabitApiResponse>> => {
   try {
-    const response = await API.put(`/habits/${id}`, data);
-    return { data: response.data, success: true };
+    const response = await api.put<HabitApiResponse>(`/habits/${id}`, data);
+    return { success: true, data: response.data };
   } catch (error: any) {
     return {
-      data: null,
       success: false,
       error: error.response?.data?.message || "Failed to update habit"
     };
   }
 };
 
-export const deleteHabit = async (id: string) => {
+export const deleteHabit = async (id: string): Promise<ApiResponse<void>> => {
   try {
-    await API.delete(`/habits/${id}`);
+    await api.delete(`/habits/${id}`);
     return { success: true };
   } catch (error: any) {
     return {
@@ -85,26 +67,24 @@ export const deleteHabit = async (id: string) => {
   }
 };
 
-export const completeHabit = async (id: string, timezone?: string) => {
+export const completeHabit = async (id: string, timezone?: string): Promise<ApiResponse<HabitApiResponse>> => {
   try {
-    const response = await API.post(`/habits/${id}/complete`, { timezone });
-    return { data: response.data, success: true };
+    const response = await api.post<HabitApiResponse>(`/habits/${id}/complete`, { timezone });
+    return { success: true, data: response.data };
   } catch (error: any) {
     return {
-      data: null,
       success: false,
       error: error.response?.data?.message || "Failed to complete habit"
     };
   }
 };
 
-export const getHabitStreak = async (id: string) => {
+export const getHabitStreak = async (id: string): Promise<ApiResponse<any>> => {
   try {
-    const response = await API.get(`/habits/${id}/streak`);
-    return { data: response.data, success: true };
+    const response = await api.get(`/habits/${id}/streak`);
+    return { success: true, data: response.data };
   } catch (error: any) {
     return {
-      data: null,
       success: false,
       error: error.response?.data?.message || "Failed to get habit streak"
     };

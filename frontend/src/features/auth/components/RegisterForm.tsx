@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaUserPlus, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaUserPlus } from 'react-icons/fa';
 
 interface RegisterFormProps {
   onSuccess?: () => void;
@@ -16,7 +16,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess }) => {
     confirmPassword: '',
   });
 
-  const [showPasswords, setShowPasswords] = useState(false);
+  const [showPasswords] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{
     name?: string;

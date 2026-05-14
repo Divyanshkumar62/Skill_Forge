@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import Joi from 'joi';
+import Joi, { ValidationErrorItem } from 'joi';
 
 interface ValidationOptions {
   body?: Joi.ObjectSchema;
@@ -18,7 +18,7 @@ export const validate = (schemas: ValidationOptions) => {
         stripUnknown: true 
       });
       if (error) {
-        const bodyErrors = error.details.map(detail => detail.message);
+        const bodyErrors = error.details.map((detail: ValidationErrorItem) => detail.message);
         errors.push(...bodyErrors);
       }
     }
@@ -29,7 +29,7 @@ export const validate = (schemas: ValidationOptions) => {
         abortEarly: false 
       });
       if (error) {
-        const paramErrors = error.details.map(detail => detail.message);
+        const paramErrors = error.details.map((detail: ValidationErrorItem) => detail.message);
         errors.push(...paramErrors);
       }
     }
@@ -40,7 +40,7 @@ export const validate = (schemas: ValidationOptions) => {
         abortEarly: false 
       });
       if (error) {
-        const queryErrors = error.details.map(detail => detail.message);
+        const queryErrors = error.details.map((detail: ValidationErrorItem) => detail.message);
         errors.push(...queryErrors);
       }
     }

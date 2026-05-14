@@ -92,9 +92,9 @@ export default function Goals() {
     setEditingGoal(goal);
     setFormData({
       title: goal.title,
-      description: goal.description,
+      description: goal.description || "",
       milestones: goal.milestones.length > 0 ? goal.milestones : [{ title: "", completed: false }],
-      dueDate: goal.dueDate,
+      dueDate: goal.dueDate || "",
     });
     setShowCreateForm(true);
   };

@@ -72,7 +72,7 @@ export const useHabits = create<HabitsState>((set, get) => ({
       if (result.success && result.data) {
         const { habits } = get();
         set({
-          habits: habits.map(h => h._id === id ? result.data : h),
+          habits: habits.map(h => h._id === id ? result.data as Habit : h),
           loading: false
         });
       } else {
@@ -114,7 +114,7 @@ export const useHabits = create<HabitsState>((set, get) => ({
       if (result.success && result.data) {
         const { habits } = get();
         set({
-          habits: habits.map(h => h._id === id ? result.data : h),
+          habits: habits.map(h => h._id === id ? result.data as Habit : h),
           loading: false
         });
       } else {

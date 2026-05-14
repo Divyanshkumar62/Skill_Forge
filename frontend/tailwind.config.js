@@ -35,6 +35,7 @@ export default {
           error: '#E74C3C',
           info: '#3498DB'
         }
+      },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'glow': 'glow 2s ease-in-out infinite alternate',
