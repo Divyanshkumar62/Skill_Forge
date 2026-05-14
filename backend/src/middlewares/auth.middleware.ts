@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model";
+import { getJwtSecret } from "../utils/generateToken";
 
 declare global {
   namespace Express {
@@ -34,10 +35,8 @@ export const protect = async (
 
   try {
     token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(
-      token as string,
-      process.env["JWT_SECRET"] as string
-    ) as any;
+    const secret = getJwtSecret();
+    const decoded = jwt.verify(token as string, secret) as { userId: string };
 
     const user = await User.findById(decoded.userId).select("-password");
     if (!user) {
@@ -49,6 +48,10 @@ export const protect = async (
     next();
   } catch (err) {
     console.error("Auth error:", err);
+    if (err instanceof jwt.JsonWebTokenError) {
+      res.status(401).json({ message: "Invalid token" });
+      return;
+    }
     res.status(401).json({ message: "Not authorized, token failed" });
   }
 };

@@ -1,5 +1,6 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/auth.routes';
 import goalRoutes from './routes/goal.routes'
 import notificationRoutes from './routes/notification.routes';
@@ -10,7 +11,20 @@ import analyticsRoutes from "./routes/analytics.routes";
 import questRoutes from './routes/quest.routes';
 import xpRoutes from './routes/xp.routes';
 import rewardRoutes from './routes/reward.routes';
-const app = express()
+import healthRoutes from './routes/health.routes';
+import { globalErrorHandler } from './middlewares/errorHandler.middleware';
+
+const app = express();
+
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { message: 'Too many requests, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(globalLimiter);
 
 const allowedOrigins = [
   "http://localhost:3000", // for local dev
@@ -48,5 +62,10 @@ app.use("/api/analytics", analyticsRoutes);
 app.use('/api/quests', questRoutes);
 app.use('/api/xp', xpRoutes);
 app.use('/api/rewards', rewardRoutes);
+app.use('/api/health', healthRoutes);
+
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  globalErrorHandler(err, _req, res, _next);
+});
 
 export default app
